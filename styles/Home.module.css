@@ -1,5 +1,5 @@
 .container {
-  padding: 0 2rem;
+
 }
 
 .main {
@@ -117,4 +117,37 @@
     flex-direction: column;
   }
 }
+.header {
+  display: flex;
+  background-color: rgb(143, 143, 143);
+  color:black;
+  align-items: center;
+  box-shadow: 10px 0px 10px black;
+}
+.header_element {
+  flex-grow: 1;
+  padding-left: 2%;
+  padding-right: 2%;
+  font-size: 20px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-bottom: 0.7%;
+  padding-top: 0.7%;
+}
+
+.header :hover
+{ 
+  color:#0070f3;
+}
+
+
+.header_element:nth-child(1) {
+  flex-grow: 3;
+  text-decoration: none;
+  font-size: 35px;
+
+}
+
+
+
 
