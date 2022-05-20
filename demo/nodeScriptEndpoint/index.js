@@ -1,29 +1,28 @@
 
-const express = require('express');
-const shelljs = require('shelljs');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const router = express.Router();
+var app = express();
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-const server = express();
+app.use(cors())
 
-server.use(bodyParser.urlencoded({extended: false}));
-server.use(bodyParser.json());
+app.use("/", router);
 
-server.use(express.json());
-
-
-// server.get('/', (req, res) => {
-//     const output = shelljs.exec('./testScript.sh test');
-//     console.log("res is: " + res);
-//     res.send(output)
-// });
-router.post("/", (req, res) => {
-    const data = req.body;
-    console.log(data);
-    // res.json(req.body);
-});
-server.use("/", router);
-server.listen(4000, () => {
-    console.log("Server is listening on port 4000...")
+router.get('/',(req, res) => {
+    res.send("This was sent");
 });
 
+router.post('/',(req, res) => {
+    var user_name = req.body.user;
+    var password = req.body.password;
+    console.log("User name = "+user_name+", password is "+password);
+    res.end("yes");
+});
+
+app.listen(8080,() => {
+console.log("Started on PORT 8080");
+})

@@ -1,5 +1,6 @@
 import styles from "../../styles/Home.module.css"
 import GetRequest from "../../components/getRequest";
+import PostRequest from "../../components/postRequest";
 const defaultEndpoint = "http://localhost:4000/";
 
 
@@ -18,11 +19,11 @@ const defaultEndpoint = "http://localhost:4000/";
 //     }
 // }
 
-export default function Blastp({ resJson }) {
-    console.log("resJson is: " + resJson);
+export default function Blastp() {
     return(
         <main>
             <h1 className={styles.title}>Blastp</h1>
+            <button onClick={ PostRequest }>Post Request</button>
             <button onClick={ GetRequest }>Get Request</button>
         </main>
     );
