@@ -16,7 +16,7 @@
 # Change this to the URL of your instance
 BASE_URL="http://localhost:4567"
 ## a DNA sequence
-query="FQTWEEFSRAAEKLYLADPMKVRVVLKYRHVDGNLCIKVTDDLVCLVYRTDQAQDVKKIEKF"
+query=$1
 
 ## Queries job  for results. Takes 2 arguments
 # @param the URL of the job (with .json suffix)

@@ -1,10 +1,10 @@
 
 const defaultRoute = "http://localhost:8080/";
+const defaultQuery = "FQTWEEFSRAAEKLYLADPMKVRVVLKYRHVDGNLCIKVTDDLVCLVYRTDQAQDVKKIEKF"
 
 export default async function PostRequest(){
     const theBody = {
-        "user": "simoncole",
-        "password": "password1"
+        "query": defaultQuery
     };
     console.log("made it here");
     const res = await fetch(defaultRoute, {
@@ -14,7 +14,7 @@ export default async function PostRequest(){
         },
         "body": JSON.stringify(theBody),
     });
-    console.log("This was called");
+    console.log(res);
     if (!res){
         return {
             notfound: true,
