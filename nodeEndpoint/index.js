@@ -16,12 +16,15 @@ app.use(cors())
 app.use("/", router);
 
 router.get('/',(req, res) => {
+    let firstScore;
+    let scoreString;
     let resultsFile = getFileName();
     console.log(`the name of the results file is:${resultsFile}end of string here`);
-    let firstScore = ReadResults(resultsFile);
-    console.log("FirstScoreString before being sent back is: ", firstScore);
-    res.send({
+    ReadResults(resultsFile, (firstScore) => {
+        console.log("FirstScoreString before being sent back is: ", firstScore);
+        res.send({
         "firstScore": firstScore
+    });
     });
 });
 
@@ -31,8 +34,8 @@ router.post('/',(req, res) => {
     res.end("This worked");
 });
 
-function ReadResults(resultsFile){
-    fs.readFileSync(resultsFile, "utf-8", (err, jsonString) => {
+function ReadResults(resultsFile, receiverFunction){
+    fs.readFile(resultsFile, "utf-8", (err, jsonString) => {
         if(err){
             console.log(`Error in reading file ${resultsFile}: ${err}`);
             return;
@@ -40,10 +43,9 @@ function ReadResults(resultsFile){
         try {
             let ObjectData = JSON.parse(jsonString);
             let firstScore = ObjectData.queries[0].hits[0].total_score;
-            let firstScoreString = JSON.stringify(firstScore);
             console.log("The nsequences is: ", ObjectData.stats.nsequences)
-            console.log("The score of the first match is: ", firstScoreString);
-            return firstScoreString;
+            console.log("The score of the first match is:", firstScore);
+            receiverFunction(firstScore);
         }
         catch(err) {
             console.log("There was an error in parsing the data: ", err);

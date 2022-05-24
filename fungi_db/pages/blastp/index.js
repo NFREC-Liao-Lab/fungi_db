@@ -1,6 +1,7 @@
 import styles from "../../styles/Home.module.css"
 import GetRequest from "../../components/getRequest";
 import PostRequest from "../../components/postRequest";
+import BlastpSearch from "../../components/BlastpSearch";
 const defaultEndpoint = "http://localhost:4000/";
 
 
