@@ -1,11 +1,5 @@
 {
-  "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
-  "/blastp": "pages/blastp.js",
-  "/": "pages/index.js",
-  "/tools": "pages/tools.js",
-  "/contactUs": "pages/contactUs.js",
-  "/blastn": "pages/blastn.js",
-  "/tblastn": "pages/tblastn.js"
+  "/_app": "pages/_app.js"
 }
