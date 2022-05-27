@@ -1,14 +1,13 @@
 const shelljs = require("shelljs");
 const fs = require("fs");
 export default function handler(req, res) {
-    let firstScore;
     let resultsFile = getFileName();
-    console.log(`the name of the results file is:${resultsFile}end of string here`);
-    ReadResults(resultsFile, (firstScore) => {
+    ReadResults(resultsFile, (firstScore, nsequences) => {
         console.log("FirstScoreString before being sent back is: ", firstScore);
-        res.status(200).json({
-        "firstScore": firstScore
-    });
+        res.status(200).json([
+            {"id": "firstScore", "firstScore": `${firstScore}`},
+            {"id": "nsequences", "nsequences": nsequences},
+        ]);
     });
 }
 
@@ -28,9 +27,12 @@ function ReadResults(resultsFile, receiverFunction){
         try {
             let ObjectData = JSON.parse(jsonString);
             let firstScore = ObjectData.queries[0].hits[0].total_score;
-            console.log("The nsequences is: ", ObjectData.stats.nsequences)
+            let nsequences = ObjectData.stats.nsequences;
+            console.log("type of firstScore before stringify is: ", typeof(firstScore));
+            console.log("after it is: ", typeof(firstScore));
+            console.log("The nsequences is: ", nsequences);
             console.log("The score of the first match is:", firstScore);
-            receiverFunction(firstScore);
+            receiverFunction(firstScore, nsequences);
         }
         catch(err) {
             console.log("There was an error in parsing the data: ", err);
