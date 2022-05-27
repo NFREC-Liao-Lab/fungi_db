@@ -1,8 +1,9 @@
 {
   "/_app": "pages/_app.js",
-  "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
-  "/api/postRequest": "pages/api/postRequest.js",
+  "/_document": "pages/_document.js",
   "/blastp/blastPResults": "pages/blastp/blastPResults.js",
-  "/api/getRequest": "pages/api/getRequest.js"
+  "/api/getRequest": "pages/api/getRequest.js",
+  "/blastp": "pages/blastp.js",
+  "/api/postRequest": "pages/api/postRequest.js"
 }
