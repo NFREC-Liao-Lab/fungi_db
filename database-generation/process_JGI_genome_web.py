@@ -127,7 +127,9 @@ JGI_info.columns
 JGI_info_2 = JGI_info[JGI_info['Status'] == "published"][JGI_info['TaxID'].notna()]
 
 
-FungalTraits = pd.read_excel('FungalTraits.xlsx')
+#FungalTraits = pd.read_excel('FungalTraits.xlsx')
+#FungalTraits.to_csv('FungalTraits.tsv', index=True, sep = "\t")
+FungalTraits = pd.read_table('FungalTraits.tsv')
 FungalTraits = FungalTraits.drop(columns = ['phylum', 'class', 'order', 'family'])
 JGI_info_FungalTraits = pd.merge(JGI_info_2, FungalTraits, on = "genus", how = "left")
 JGI_info_FungalTraits['primary_lifestyle'].fillna('Unassigned', inplace = True)
