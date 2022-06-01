@@ -124,10 +124,12 @@ JGI_info = pd.read_table(write_file, header = "infer", index_col=0)
 JGI_info.columns
 #print(JGI_info.head)
 
+
 JGI_info_2 = JGI_info[JGI_info['Status'] == "published"][JGI_info['TaxID'].notna()]
-JGI_info_2.to_csv('FunDB_genomes_info_' + day_time + '.csv', index = True)
+JGI_info_2.to_csv ('FunDB_genomes_info_' + day_time + '.csv', index = True, sep = "\t")
 JGI_info_funguild = pd.DataFrame(JGI_info_2, columns=['Genome_id', 'taxonomy'])
-JGI_info_funguild.to_csv('FunDB_genomes_info_' + day_time + '_for_funguild.csv', index = True)
+JGI_info_funguild.to_csv('FunDB_genomes_info_' + day_time + '_for_funguild.csv', index = True, sep = "\t")
+
 
 
 
