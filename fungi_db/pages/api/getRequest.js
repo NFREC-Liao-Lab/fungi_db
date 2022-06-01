@@ -2,12 +2,10 @@ const shelljs = require("shelljs");
 const fs = require("fs");
 export default function handler(req, res) {
     let resultsFile = getFileName();
-    ReadResults(resultsFile, (firstScore, nsequences) => {
-        console.log("FirstScoreString before being sent back is: ", firstScore);
-        res.status(200).json([
-            {"id": "firstScore", "firstScore": `${firstScore}`},
-            {"id": "nsequences", "nsequences": nsequences},
-        ]);
+    ReadResults(resultsFile, (results) => {
+        res.status(200).json(
+            results
+        );
     });
 }
 
@@ -18,7 +16,17 @@ function getFileName(){
 }
 
 function ReadResults(resultsFile, receiverFunction){
+    //showing top 10
     let resultsFilePath = "/Users/simoncole/fungiDB/fungi_db/" + resultsFile;
+
+    let sequenceID = [];
+    let taxonomicID = []; //add this with data
+    let fungiLifestyle = []; //what is this
+    let totalScore = [];
+    let queryCoverage = [];
+    let eValue = [];
+    let identityValue = [];
+
     fs.readFile(resultsFilePath, "utf-8", (err, jsonString) => {
         if(err){
             console.log(`Error in reading file ${resultsFile}: ${err}`);
@@ -26,17 +34,34 @@ function ReadResults(resultsFile, receiverFunction){
         }
         try {
             let ObjectData = JSON.parse(jsonString);
-            let firstScore = ObjectData.queries[0].hits[0].total_score;
-            let nsequences = ObjectData.stats.nsequences;
-            console.log("type of firstScore before stringify is: ", typeof(firstScore));
-            console.log("after it is: ", typeof(firstScore));
-            console.log("The nsequences is: ", nsequences);
-            console.log("The score of the first match is:", firstScore);
-            receiverFunction(firstScore, nsequences);
+            for(let i = 0; i < 10; i++){
+                sequenceID[i] = ObjectData.queries[0].hits[i].id;
+                // TODO: taxonomicID[i] = ObjectData.queries[i]
+                // TODO: fungiLifestyle
+                // TODO: maxScore
+                totalScore[i] = ObjectData.queries[0].hits[i].total_score;
+                queryCoverage[i] = ObjectData.queries[0].hits[i].qcovs;
+                eValue[i] = ObjectData.queries[0].hits[i].hsps[0].evalue;
+                identityValue[i] = ObjectData.queries[0].hits[i].hsps[0].identity;
+
+            }
         }
         catch(err) {
             console.log("There was an error in parsing the data: ", err);
             return;
         }
+        let results = [];
+        for(let i = 0; i < 10; i++){
+            results[i] = {
+                "sequenceID": sequenceID[i],
+                "totalScore": totalScore[i],
+                "queryCoverage": queryCoverage[i],
+                "eValue": eValue[i],
+                "identityValue": identityValue[i],
+            }
+        }
+        receiverFunction(results);
+
+
     });
 }

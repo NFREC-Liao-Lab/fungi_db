@@ -3,7 +3,5 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/blastp/blastPResults": "pages/blastp/blastPResults.js",
-  "/api/getRequest": "pages/api/getRequest.js",
-  "/blastp": "pages/blastp.js",
-  "/api/postRequest": "pages/api/postRequest.js"
+  "/api/getRequest": "pages/api/getRequest.js"
 }

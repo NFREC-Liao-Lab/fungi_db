@@ -1,16 +1,19 @@
+import ResultsTable from "../../../components/resultsTable";
 import styles from "../../../styles/Home.module.css"
 
 export default function blastPResults({ results }){
+    console.log(results);
     return(
         <div>
             <h1 className={styles.title}>BlAST Search Results</h1>
-            {results.map((result) => {
+            {/* {results.map((result) => {
             return(
                 <div key={result.id}>
-                    {result.id} {result.nsequences} {result.firstScore}
+                    {result.id} {result.sequenceID} {result.totalScore} {result.queryCoverage} {result.eValue} {result.identityValue} 
                 </div>
             );
-            })}
+            })} */}
+            <ResultsTable data={results}/>
             
         </div>
     );
