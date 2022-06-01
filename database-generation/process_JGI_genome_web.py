@@ -124,23 +124,15 @@ JGI_info = pd.read_table(write_file, header = "infer", index_col=0)
 JGI_info.columns
 #print(JGI_info.head)
 
-
 JGI_info_2 = JGI_info[JGI_info['Status'] == "published"][JGI_info['TaxID'].notna()]
-JGI_info_2.to_csv ('FunDB_genomes_info_' + day_time + '.csv', index = True, sep = "\t")
-JGI_info_funguild = pd.DataFrame(JGI_info_2, columns=['Genome_id', 'taxonomy'])
-JGI_info_funguild.to_csv('FunDB_genomes_info_' + day_time + '_for_funguild.csv', index = True, sep = "\t")
 
 
+FungalTraits = pd.read_excel('FungalTraits.xlsx')
+FungalTraits = FungalTraits.drop(columns = ['phylum', 'class', 'order', 'family'])
+JGI_info_FungalTraits = pd.merge(JGI_info_2, FungalTraits, on = "genus", how = "left")
+JGI_info_FungalTraits['primary_lifestyle'].fillna('Unassigned', inplace = True)
 
-
-
-
-
-
-
-
-
-
+JGI_info_FungalTraits.to_csv('FunDB_genomes_info_FungalTraits_' + day_time + '.tsv', index = True, sep = "\t")
 
 
 
