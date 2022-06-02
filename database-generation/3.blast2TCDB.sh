@@ -21,7 +21,7 @@ blastp_run () {
     db="$database_dir/tcdb"
     
     
-    if [ ! -s $result_dir/"$base".tcdb.blastp.out ]; then
+    if [ ! -s  $result_dir/${genome_id}.tcdb.blastp.out ]; then
         blastp \
          -query $TMH \
          -db $db \
