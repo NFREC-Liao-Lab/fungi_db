@@ -55,9 +55,9 @@ htmlf.close()
 soup = BeautifulSoup(genome_list, 'lxml')
 
 
-write_file = 'Least.JGI_genome_info1_'+str(day_time)+'.txt'
+write_file = 'Latest.JGI_genome_info1_'+str(day_time)+'.txt'
 f = open(write_file, 'w')
-f.write('JGI_No\tGenome_id\tSpecies\tAssembly_Length\tGene_number\tStatus\tPublish_link\tTaxID\tsuperkingdom\tkingdom\tphylum\tclass\torder\tfamily\tgenus\tspecies\ttaxonomy\n')
+f.write('JGI_No\tGenome_id\tJGI_link\tSpecies\tAssembly_Length\tGene_number\tStatus\tPublish_link\tTaxID\tsuperkingdom\tkingdom\tphylum\tclass\torder\tfamily\tgenus\tspecies\ttaxonomy\n')
 desired_ranks=["superkingdom","kingdom","phylum","class", "order", "family", "genus", "species"]
 for i in range(0,2500):
     #print(i)
@@ -66,7 +66,8 @@ for i in range(0,2500):
         #print(tr)
         status = "".join(tr['class'])
         number = "".join(re.findall(r'>(.*?)</td>', str(list(tr)[1])))
-        name = "".join(re.findall(r'href="/(.*?)">', str(list(tr)[3])))
+        Genome_id = "".join(re.findall(r'href="/(.*?)">', str(list(tr)[3])))
+        JGI_link = "https://mycocosm.jgi.doe.gov/"+Genome_id+"/"+Genome_id+".home.html"
         strain = "".join(re.findall(r'">(.*?)<', str(list(tr)[3])))
         genus = strain.split()[0]
         species = strain.split()[1]
@@ -110,7 +111,7 @@ for i in range(0,2500):
 
         desired_lineage.insert(0,taxID)
         taxName_full = ";".join(full_lineage)
-        JGI_info = [number,name, taxa_name,Assembly_Length,Gene_num, status, Publish_link]
+        JGI_info = [number,Genome_id, JGI_link, taxa_name,Assembly_Length,Gene_num, status, Publish_link]
         all_info =  JGI_info + desired_lineage
         output ="\t".join(all_info) + '\t' + taxName_full + '\n'
         #print(output)
@@ -134,18 +135,9 @@ FungalTraits = FungalTraits.drop(columns = ['phylum', 'class', 'order', 'family'
 JGI_info_FungalTraits = pd.merge(JGI_info_2, FungalTraits, on = "genus", how = "left")
 JGI_info_FungalTraits['primary_lifestyle'].fillna('Unassigned', inplace = True)
 
+JGI_info_FungalTraits[["TaxID"]] = JGI_info_FungalTraits[["TaxID"]].astype(int)
 JGI_info_FungalTraits.to_csv('FunDB_genomes_info_FungalTraits_' + day_time + '.tsv', index = True, sep = "\t")
 JGI_info_FungalTraits.to_csv('FunDB_genomes_info_FungalTraits_Last_Update.tsv', index = True, sep = "\t")
-
-
-
-
-
-
-
-
-
-
 
 
 
