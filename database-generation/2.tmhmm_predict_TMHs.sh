@@ -24,7 +24,7 @@ tmhmm_run () {
          faSomeRecords $result_dir/${genome_id}.protein.aa.wo.stop.fasta   $result_dir/${genome_id}.tmhmm.result  $result_dir/${genome_id}.TMHs.fasta
          
          #perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2 /' $result_dir/${genome_id}.TMHs.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.TMHs_clean.fasta
-         perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2|$3/' $result_dir/${genome_id}.TMHs.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.TMHs_clean.fasta
+         perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2|$1_$3/' $result_dir/${genome_id}.TMHs.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.TMHs_clean.fasta
          perl -i -p -e 'unless( /^>/ ) {  s/x// }'  $result_dir/${genome_id}.TMHs_clean.fasta
     fi
  }
