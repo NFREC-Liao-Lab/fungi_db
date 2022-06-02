@@ -135,7 +135,7 @@ JGI_info_FungalTraits = pd.merge(JGI_info_2, FungalTraits, on = "genus", how = "
 JGI_info_FungalTraits['primary_lifestyle'].fillna('Unassigned', inplace = True)
 
 JGI_info_FungalTraits.to_csv('FunDB_genomes_info_FungalTraits_' + day_time + '.tsv', index = True, sep = "\t")
-
+JGI_info_FungalTraits.to_csv('FunDB_genomes_info_FungalTraits_Last_Update.tsv', index = True, sep = "\t")
 
 
 
