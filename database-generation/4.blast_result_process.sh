@@ -35,6 +35,24 @@ blastp_result () {
     perl -i -p -e 'unless( /^>/ ) {  s/x// }'  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
     
     rm -f $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta 
+    
+    #assign new id to sequences
+    cat $result_dir/${genome_id}.tcdb.blastp.best_matched.tab |awk '{print $2}' |cut -d"|" -f 4 > $result_dir/${genome_id}.TCDB_cat
+    cat $result_dir/${genome_id}.tcdb.blastp.best_matched.tab |awk '{print $1}'  > $result_dir/${genome_id}.query_id
+    paste $result_dir/${genome_id}.query_id $result_dir/${genome_id}.TCDB_cat > $result_dir/${genome_id}.prot2tcdb
+    rm -f $result_dir/${genome_id}.queryt_id $result_dir/${genome_id}.TCDB_cat 
+
+    while read line; do
+          prot_id=$(echo $line |awk '{print $1}')
+          tcdb_id=$(echo $line  |awk '{print $2}')
+          new_id="$prot_id|$tcdb_id"
+ 
+          sed -i "s/${prot_id}/${new_id}/g" $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta
+          sed -i "s/${prot_id}/${new_id}/g" $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
+    done < $result_dir/${genome_id}.prot2tcdb
+    
+    cp $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta $FunDB_prot_dir
+    cp $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta $FunDB_nucl_dir
    }
 
 export -f blastp_result
