@@ -17,6 +17,7 @@ blastp_run () {
     FunDB_prot_dir=/home/microbiome/data_storage/SATA1/Database/prot
     FunDB_nucl_dir=/home/microbiome/data_storage/SATA1/Database/nucl
     TMH=$result_dir/${genome_id}.TMHs_clean.fasta
+    database_dir=/home/microbiome/data_storage/SATA1/database/transporterDB/blast_db/blast_db
     db="$database_dir/tcdb"
     
     
@@ -24,7 +25,7 @@ blastp_run () {
         blastp \
          -query $TMH \
          -db $db \
-         -out $blast_out/${genome_id}.tcdb.blastp.out  \
+         -out $result_dir/${genome_id}.tcdb.blastp.out  \
          -evalue 1e-5 \
          -num_threads 20 \
          -max_target_seqs 5 \
@@ -34,4 +35,5 @@ blastp_run () {
 
 export -f blastp_run
 
-time parallel -j 10 --eta --load 95% --noswap  run_blastp ::: $(cat Updated_genome_list)
+Updated_genome_list=/home/microbiome/data_storage/SATA1/FunDB/Updated_genome_list
+time parallel -j 10 --eta --load 95% --noswap  blastp_run ::: $(cat $Updated_genome_list)
