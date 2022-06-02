@@ -9,7 +9,7 @@ for seq in $(ls $FunDB_dir/prot); do
     cat $FunDB_dir/prot/$seq |seqkit seq -n |while read line; do
          SeqID=$line
          Genome_id=$(echo $line |cut -d "|" -f 1)
-         prot_id=$(echo $line |cut -d "|" -f 2)
+         prot_id=$(echo $line |cut -d "|" -f 2| cut -d "_" -f 2)
          Gene_id=$(echo $line |cut -d "|" -f 3)
          Transporter_id=$(echo $line |cut -d "|" -f 4)
          Transporter_level1=$(echo $Transporter_id |cut -d"." -f 1)
@@ -27,7 +27,7 @@ for seq in $(ls $FunDB_dir/nucl); do
     cat $FunDB_dir/nucl/$seq |seqkit seq -n |while read line; do
          SeqID=$line
          Genome_id=$(echo $line |cut -d "|" -f 1)
-         prot_id=$(echo $line |cut -d "|" -f 2)
+         prot_id=$(echo $line |cut -d "|" -f 2| cut -d "_" -f 2)
          Gene_id=$(echo $line |cut -d "|" -f 3)
          Transporter_id=$(echo $line |cut -d "|" -f 4)
          Transporter_level1=$(echo $Transporter_id |cut -d"." -f 1)
