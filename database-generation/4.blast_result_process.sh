@@ -32,7 +32,7 @@ blastp_result () {
     sed -i 's/*//g'  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta 
     
     
-    perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2|$3/' $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
+    perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2|$1_$3/' $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
     perl -i -p -e 'unless( /^>/ ) {  s/x// }'  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
     
     rm -f $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta 
