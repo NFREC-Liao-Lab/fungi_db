@@ -1,12 +1,12 @@
 #Part 3
 cat FunDB_genomes_info_FungalTraits_Last_Update.tsv |sed 1d | awk '{print $2}' > Updated_genome_list
 
-#assign the directory of genome files
-genome_dir=/home/microbiome/data_storage/SATA2/fungi_genome/fungal_genomes
-tmhmm=/home/microbiome/data_storage/app/tmhmm/bin/tmhmm
 
 tmhmm_run () {
     genome_id=$1
+    #assign the directory of genome files
+    genome_dir=/home/microbiome/data_storage/SATA2/fungi_genome/fungal_genomes
+    tmhmm=/home/microbiome/data_storage/app/tmhmm/bin/tmhmm
     genome=$genome_dir/$genome_id
     protein=$genome/*_GeneCatalog_proteins_*
     genes=$genome/*_GeneCatalog_CDS_*
@@ -26,7 +26,8 @@ tmhmm_run () {
          #perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2 /' $result_dir/${genome_id}.TMHs.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.TMHs_clean.fasta
          perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2|$3/' $result_dir/${genome_id}.TMHs.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.TMHs_clean.fasta
          perl -i -p -e 'unless( /^>/ ) {  s/x// }'  $result_dir/${genome_id}.TMHs_clean.fasta
-     }
+    fi
+ }
 
 export -f tmhmm_run
 
