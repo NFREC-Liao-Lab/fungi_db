@@ -22,6 +22,7 @@ blastp_result () {
     sed -i 's/*//g' $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta
     
     #extract the CDS sequences
+    rm -f $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_id  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query_id
     cat $result_dir/${genome_id}.tcdb.blastp.best_matched_query_id |cut -d"|" -f 3 > $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_id
     for line in $(cat $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_id); do
         cat $result_dir/${genome_id}.CDS.fasta |grep -w $line|sed 's/>//g' >> $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query_id
@@ -29,7 +30,7 @@ blastp_result () {
     
     faSomeRecords $result_dir/${genome_id}.CDS.fasta   $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query_id  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta
     sed -i 's/*//g'  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta 
-    rm -f $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_id  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query_id
+    
     
     perl -p -e 's/>jgi\|(\S+)\|(\d+)\|/>$1|$1_$2|$3/' $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl_query.fasta | sed 's/*//g'  >  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
     perl -i -p -e 'unless( /^>/ ) {  s/x// }'  $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
