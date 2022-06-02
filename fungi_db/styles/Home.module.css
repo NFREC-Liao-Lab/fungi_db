@@ -6,9 +6,6 @@
     transform: rotate(359deg);
   }
 }
-.container {
-
-}
 
 .main {
   min-height: 100vh;
@@ -146,6 +143,8 @@
 .header :hover
 { 
   color:#0070f3;
+  transition-duration: 0.4s;
+
 }
 
 
@@ -156,11 +155,86 @@
 
 }
 
-.pixelMushroom {
+.mushroomIcon {
   animation: rotation 2s infinite linear;
 }
 
-.resultsTable {
-  border: 1px solid;
+.resultsTable{
+  border: 2px solid;
+  border-collapse: collapse;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  text-align: center;
+  padding: 5px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+.resultsTable th{
+  background-color: #0070f3;
+}
+
+.resultsTable tr:hover{
+  background-color: #0070f3;
+}
+
+.userQuery {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  margin-left: 15%;
+  margin-right: 15%;
+  text-align: center;
+}
+
+.searchForm {
+  text-align: left;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+.formInput {
+  padding-bottom: 60px;
+  border: 2px solid #0070f3;
+  border-radius: 8px;
+  height: 25rem;
+  width: 100%;
+}
+
+.searchButton {
+  border: 2px solid #8e8e8e;
+  border-radius: 8px;
+  background-color: aliceblue;
+  width: 10%;
+  transition-duration: 0.4s;
+  font-size: large;
+  padding: 5px;
+  margin-bottom: 60px;
+}
+.searchButton:hover{
+  border: 2px solid #0070f3;
+  background-color: #0070f3;
+}
+
+#searchFieldHeader {
+  margin: 0.1rem;
+  font-size: x-large;
+}
+
+.searching{
+
+  font-size: 6rem;
+  background: #2980B9;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FFFFFF, #6DD5FA, #2980B9);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #FFFFFF, #6DD5FA, #2980B9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-size: 200%;
+  animation: gradient 2s linear infinite alternate;
+}
+
+@keyframes gradient{
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 100%;
+  }
+}

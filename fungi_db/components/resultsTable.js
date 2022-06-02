@@ -1,18 +1,17 @@
-import { createTable } from 'react-table'
 import styles from "../styles/Home.module.css"
 
 export default function ResultsTable(props) {
     let data = props.data;
     return (
-        <div className={styles.resultsTable}>
-            <table>
+        <div>
+            <table className={styles.resultsTable}>
                 <thead>
                     <tr>
-                        <th>Subject Sequence ID</th>
-                        <th>Total Score</th>
-                        <th>Query Coverage</th>
-                        <th>E value</th>
-                        <th>Identity Value</th>
+                        <th className={styles.resultsTable}>Subject Sequence ID</th>
+                        <th className={styles.resultsTable}>Total Score</th>
+                        <th className={styles.resultsTable}>Query Coverage</th>
+                        <th className={styles.resultsTable}>E value</th>
+                        <th className={styles.resultsTable}>Identity Value</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -20,11 +19,11 @@ export default function ResultsTable(props) {
                         data.map((dataCategory, index) =>{
                             return(
                                 <tr key={index}>
-                                    <td>{dataCategory.sequenceID}</td>
-                                    <td>{dataCategory.totalScore}</td>
-                                    <td>{dataCategory.queryCoverage}</td>
-                                    <td>{dataCategory.eValue}</td>
-                                    <td>{dataCategory.identityValue}</td>
+                                    <td className={styles.resultsTable}>{dataCategory.sequenceID}</td>
+                                    <td className={styles.resultsTable}>{dataCategory.totalScore}</td>
+                                    <td className={styles.resultsTable}>{dataCategory.queryCoverage}</td>
+                                    <td className={styles.resultsTable}>{dataCategory.eValue}</td>
+                                    <td className={styles.resultsTable}>{dataCategory.identityValue}</td>
                                 </tr>
                             )
                         })
