@@ -52,8 +52,8 @@ blastp_result () {
           sed -i "s/${prot_id}/${new_id}/g" $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
     done < $result_dir/${genome_id}.prot2tcdb
     
-    cp $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta $FunDB_prot_dir
-    cp $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta $FunDB_nucl_dir
+    cp -f $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta $FunDB_prot_dir
+    cp -f $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta $FunDB_nucl_dir
    }
 
 export -f blastp_result
