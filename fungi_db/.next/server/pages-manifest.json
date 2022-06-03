@@ -2,7 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/postRequest": "pages/api/postRequest.js",
-  "/blastp/blastPResults": "pages/blastp/blastPResults.js",
-  "/api/getRequest": "pages/api/getRequest.js"
+  "/": "pages/index.js",
+  "/api/getRequest": "pages/api/getRequest.js",
+  "/blastp/blastPResults": "pages/blastp/blastPResults.js"
 }

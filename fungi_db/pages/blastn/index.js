@@ -1,5 +1,8 @@
 export default function NucleotideBlast() {
     return(
-        <h1>Blast</h1>
+        <main>
+            <h1 className={styles.title}>BlastN</h1>
+            <BlastpSearch/>
+        </main>
     );
 }

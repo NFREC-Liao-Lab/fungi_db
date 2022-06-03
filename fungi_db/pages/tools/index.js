@@ -12,19 +12,19 @@ export default function Tools() {
             <div className={styles.grid}>
             <Link href="/blastn">
                 <a className={styles.card}>
-                <h2>Sample Tool &rarr;</h2>
+                <h2>BlastN &rarr;</h2>
                 <p>Some description here</p>
                 </a>
             </Link>
 
-            <Link href="/blastx">
+            <Link href="/">
                 <a className={styles.card}>
                 <h2>Sample Tool &rarr;</h2>
                 <p>Some description here</p>
                 </a>
             </Link>
 
-            <Link href="/tblastn">
+            <Link href="/">
                 <a className={styles.card}>
                 <h2>Sample Tool &rarr;</h2>
                 <p>Some description here</p>
@@ -33,7 +33,7 @@ export default function Tools() {
 
             <Link href="/blastp">
                 <a className={styles.card}>
-                <h2>Protein Blast &rarr;</h2>
+                <h2>BlastP &rarr;</h2>
                 <p>Some description here</p>
                 </a>
             </Link>
