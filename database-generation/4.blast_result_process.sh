@@ -56,6 +56,7 @@ blastp_result () {
     
     cp -f $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta $FunDB_prot_dir
     cp -f $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta $FunDB_nucl_dir
+    cp -f $result_dir/${genome_id}.prot2tcdb $FunDB_prot_dir
     cp -f $result_dir/${genome_id}.prot2tcdb $FunDB_nucl_dir
    }
 
