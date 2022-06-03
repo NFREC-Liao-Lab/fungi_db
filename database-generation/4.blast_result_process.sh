@@ -46,7 +46,8 @@ blastp_result () {
     while read line; do
           prot_id=$(echo $line |awk '{print $1}')
           tcdb_id=$(echo $line  |awk '{print $2}')
-          new_id="$prot_id|$tcdb_id"
+         #new_id="$prot_id|$tcdb_id"
+          new_id=$(echo $prot_id |cut -d "|" -f 2)
  
           sed -i "s/${prot_id}/${new_id}/g" $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta
           sed -i "s/${prot_id}/${new_id}/g" $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta
