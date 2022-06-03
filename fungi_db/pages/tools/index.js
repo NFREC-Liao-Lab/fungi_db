@@ -12,21 +12,21 @@ export default function Tools() {
             <div className={styles.grid}>
             <Link href="/blastn">
                 <a className={styles.card}>
-                <h2>Nucleotide Blast &rarr;</h2>
+                <h2>Sample Tool &rarr;</h2>
                 <p>Some description here</p>
                 </a>
             </Link>
 
             <Link href="/blastx">
                 <a className={styles.card}>
-                <h2>Blastx &rarr;</h2>
+                <h2>Sample Tool &rarr;</h2>
                 <p>Some description here</p>
                 </a>
             </Link>
 
             <Link href="/tblastn">
                 <a className={styles.card}>
-                <h2>TBlastn &rarr;</h2>
+                <h2>Sample Tool &rarr;</h2>
                 <p>Some description here</p>
                 </a>
             </Link>
