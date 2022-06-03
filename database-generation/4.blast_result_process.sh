@@ -40,7 +40,8 @@ blastp_result () {
     #assign new id to sequences
     cat $result_dir/${genome_id}.tcdb.blastp.best_matched.tab |awk '{print $2}' |cut -d"|" -f 4 > $result_dir/${genome_id}.TCDB_cat
     cat $result_dir/${genome_id}.tcdb.blastp.best_matched.tab |awk '{print $1}'  > $result_dir/${genome_id}.query_id
-    paste $result_dir/${genome_id}.query_id $result_dir/${genome_id}.TCDB_cat > $result_dir/${genome_id}.prot2tcdb
+    cat $result_dir/${genome_id}.tcdb.blastp.best_matched.tab |awk '{print $1}' |cut -d "|" -f 2 > $result_dir/${genome_id}.seq_id
+    paste $result_dir/${genome_id}.query_id $result_dir/${genome_id}.TCDB_cat $result_dir/${genome_id}.seq_id > $result_dir/${genome_id}.prot2tcdb
     rm -f $result_dir/${genome_id}.queryt_id $result_dir/${genome_id}.TCDB_cat 
 
     while read line; do
@@ -55,6 +56,7 @@ blastp_result () {
     
     cp -f $result_dir/${genome_id}.tcdb.blastp.best_matched_prot.fasta $FunDB_prot_dir
     cp -f $result_dir/${genome_id}.tcdb.blastp.best_matched_nucl.fasta $FunDB_nucl_dir
+    cp -f $result_dir/${genome_id}.prot2tcdb $FunDB_nucl_dir
    }
 
 export -f blastp_result
