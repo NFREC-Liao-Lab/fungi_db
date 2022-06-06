@@ -30,10 +30,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/blastp/blastPResults": [
+    "/blastp": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/blastp/blastPResults.js"
+      "static/chunks/pages/blastp.js"
+    ],
+    "/blastp/blastpResults": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/blastp/blastpResults.js"
     ]
   },
   "ampFirstPages": []

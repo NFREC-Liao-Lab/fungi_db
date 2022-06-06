@@ -21,7 +21,7 @@ function ReadResults(resultsFile, receiverFunction){
 
     let sequenceID = [];
     let taxonomicID = []; //add this with data
-    let fungiLifestyle = []; //what is this
+    let fungiLifestyle = []; 
     let totalScore = [];
     let queryCoverage = [];
     let eValue = [];

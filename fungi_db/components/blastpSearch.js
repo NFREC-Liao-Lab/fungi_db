@@ -32,7 +32,7 @@ export default function BlastpSearch() {
         const result = await response.json()
 
         router.push({
-          pathname: "/blastp/blastPResults",
+          pathname: "/blastp/blastpResults",
           query: data,
         });
       }
