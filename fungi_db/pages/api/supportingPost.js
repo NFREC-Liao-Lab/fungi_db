@@ -1,19 +1,10 @@
-// import {parse} from "papaparse"
-// export default async function handler(req, res) {
-//     let theData;
-//     let fetchResults = await fetch("/Users/simoncole/FungiDB/database-generation/FunDB_prot_seqID.csv")
-//         .then(response => response.text())
-//         .then(data => {
-//             // Do something with your data
-//             console.log("from .then: ", data);
-//             theData = data;
-//     });
-//     let results = parse(theData, {download: true})
-//     console.log(results);
-//     const responseJson = {
-//         "response": "check the console",
-//     }
-//     res.status(200).json(
-//         responseJson
-// )
-// }
+import * as d3 from "d3"
+
+export default function handler(req, res) {
+    const body = req.body;
+    console.log(body);
+    d3.tsv("/Users/simoncole/FungiDB/database-generation/FunDB_prot_seqID.tsv", (data) => {
+        console.log(data);
+        res.status(200).json({data});
+    });
+}
