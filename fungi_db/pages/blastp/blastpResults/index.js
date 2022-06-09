@@ -2,15 +2,21 @@ import ResultsTable from "../../../components/resultsTable";
 import styles from "../../../styles/Home.module.css";
 import Router, { useRouter } from "next/router";
 
-export default function blastPResults({ results }){
+/*In future subject sequence ID
+Taxonomy ID
+Lifestyle
+In Future Transport ID with link to our site
+*/
+
+export default function blastPResults(props){
     const router = useRouter();
-    // console.log(router.query);
-    // console.log(results);
+
+    let resultsTableProps = [props.results, props.supportingDataKey];
     return(
         <div>
             <h1 className={styles.title}>BLAST Search Results</h1>
             <p className={styles.userQuery}>The Query was: {router.query.query}</p>
-            <ResultsTable data={results}/>
+            <ResultsTable data={resultsTableProps}/>
             
         </div>
     );
@@ -21,26 +27,37 @@ export async function getServerSideProps() {
     const res = await fetch('http://localhost:3000/api/getRequest');
     const data = await res.json();
 
-    const sequenceIDs = [];
-    for(let i = 0; i < 10; i++){
-        sequenceIDs[i] = data[i].sequenceID; //could be an issue with async here
+    const seqIds = await getSeqIds(data);
+    let theBody = {
+        "seqIds": seqIds
     }
-    const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: sequenceIDs,
-    }
-    const supportingRes = await fetch("http://localhost:3000/api/supportingPost", options);
-    const supportingData = await supportingRes.json();
+    let stringTheBody = JSON.stringify(theBody);
 
+    const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: stringTheBody,
+      }
+
+    const res2 = await fetch("http://localhost:3000/api/supportingData", options);
+    const supportingData = await res2.json();
 
     return{
         props: {
-            results: data
+            results: data,
+            supportingDataKey: supportingData,
         }
     }
 
 }
 
+export async function getSeqIds(data){
+    let seqIds = [];
+    for(let i = 0; i < 10; i++){
+        seqIds[i] = data[i].sequenceID;
+        JSON.stringify(seqIds[i]);
+    }
+    return seqIds;
+}

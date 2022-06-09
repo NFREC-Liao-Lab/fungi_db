@@ -18,6 +18,7 @@ export default function BlastpSearch() {
           query: event.target.query.value,
         }
     
+        //converts data from form from Object to String
         const JSONdata = JSON.stringify(data)    
         const endpoint = '/api/postRequest'    
         const options = {
@@ -30,6 +31,8 @@ export default function BlastpSearch() {
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+
+        console.log("Result is: ", result);
 
         router.push({
           pathname: "/blastp/blastpResults",
