@@ -3,6 +3,7 @@ import styles from "../styles/Home.module.css"
 export default function ResultsTable(props) {
     let data = props.data[0];
     let supportingData = props.data[1];
+    let genomeInfo = props.data[2];
     return (
         <div>
             <table className={styles.resultsTable}>
@@ -14,6 +15,8 @@ export default function ResultsTable(props) {
                         <th className={styles.resultsTable}>E value</th>
                         <th className={styles.resultsTable}>Identity Value</th>
                         <th className={styles.resultsTable}>TransporterID<br />(Click for more info)</th>
+                        <th className={styles.resultsTable}>Species</th>
+                        <th className={styles.resultsTable}>Lifestyle</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,6 +30,8 @@ export default function ResultsTable(props) {
                                     <td className={styles.resultsTable}>{dataCategory.eValue}</td>
                                     <td className={styles.resultsTable}>{dataCategory.identityValue}</td>
                                     <td className={styles.resultsTable}><a className={styles.transporterLink} href={`https://www.tcdb.org/search/result.php?tc=${supportingData[index][0].Transporter_id}`}>{supportingData[index][0].Transporter_id}</a></td>
+                                    <td className={styles.resultsTable}>{genomeInfo[index][0].Species}</td>
+                                    <td className={styles.resultsTable}>{genomeInfo[index][0].primary_lifestyle}</td>
                                 </tr>
                             )
                         })

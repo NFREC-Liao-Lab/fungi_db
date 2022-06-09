@@ -5,9 +5,11 @@ export default async function handler(req, res) {
         const seqIds = req.body.seqIds;
         const results = [];
         for(let i = 0; i < 10; i++){
-            results[i] = await sql_query(`SELECT Transporter_id
-            FROM mytable
-            WHERE SeqID='${seqIds[i]}'`);
+            results[i] = await sql_query(
+                `SELECT Transporter_id, Genome_id
+                FROM proteinSeqID
+                WHERE SeqID='${seqIds[i]}'
+            `);
         }
         return res.status(200).json(results);
     }
