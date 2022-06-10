@@ -17,16 +17,22 @@ export default function BlastpSearch() {
         const data = {
           query: event.target.query.value,
         }
+
+        console.log("data is: ", data);
+
+        //validate data
+        const validatedData = validateData(data);
+        console.log("validatedData is: ", validatedData);
     
         //converts data from form from Object to String
-        const JSONdata = JSON.stringify(data)    
+        const stringData = JSON.stringify(validatedData)    
         const endpoint = '/api/postRequest'    
         const options = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSONdata,
+          body: stringData,
         }
     
         const response = await fetch(endpoint, options)
@@ -50,4 +56,41 @@ export default function BlastpSearch() {
             {searchStatus && <Searching/>}
         </div>
     );
+}
+
+export function validateData(data){
+  let query = data.query;
+  let headers = [];
+  let sequences = [];
+  let sequencesIndex = 0;
+  let headersIndex = 0;
+  let sequenceStart = 0;
+  let sequenceEnd;
+  let tempi, tempj;
+  for(let i = 0; i < query.length; i++){
+    if(query.charAt(i) === ">"){
+      tempi = i;
+      sequenceEnd = --tempi;
+      if(sequenceEnd !== -1){
+        sequences[sequencesIndex] = query.slice(sequenceStart, sequenceEnd);
+        sequencesIndex++;
+      }
+      for(let j = i; j < query.length; j++){
+        if(query.charAt(j) === "\n"){
+          headers[headersIndex] = query.slice(i, j);
+          headersIndex++;
+          tempj = j;
+          sequenceStart = ++tempj;
+          break;
+        }
+      }
+    }
+  }
+  //assign last sequence
+  sequences[sequencesIndex] = query.slice(sequenceStart, query.length);
+  const results = {
+    "headers": headers,
+    "sequences": sequences,
+  }
+  return results;
 }
