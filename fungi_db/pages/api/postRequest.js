@@ -1,13 +1,13 @@
 const shelljs = require("shelljs");
 export default function handler(req, res){
-    const body = req.body;
-    let query = req.body.query;
-    console.log("body is: ", body);
-
     //make sure there is a query
-    if(!body.query){
+    if(!req.body.sequences[0]){
         return res.status(400).json({data: "query not found"});
     }
-    shelljs.exec(`/Users/simoncole/fungiDB/db/blastnAllDbs.sh ${query}`);
+    let queries = [];
+    for(let i = 0; i < req.body.sequences.length; i++){
+        queries[i] = req.body.sequences[i];
+        shelljs.exec(`/Users/simoncole/fungiDB/db/blastnAllDbs.sh ${queries[i]}`);
+    }
     res.status(200).json({});
 }
