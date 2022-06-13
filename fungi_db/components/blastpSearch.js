@@ -23,10 +23,6 @@ export default function BlastpSearch() {
         //validate data
         const validatedData = validateData(data);
         console.log("validatedData is: ", validatedData);
-
-        const numberOfSequences = {
-          "numberOfSequences": validatedData.sequences.length,
-        };
     
         //converts data from form from Object to String
         const stringData = JSON.stringify(validatedData)    
@@ -46,7 +42,7 @@ export default function BlastpSearch() {
 
         router.push({
           pathname: "/blastp/blastpResults",
-          query: numberOfSequences
+          query: data,
         });
       }
 
@@ -96,6 +92,5 @@ export function validateData(data){
     "headers": headers,
     "sequences": sequences,
   }
-
   return results;
 }
