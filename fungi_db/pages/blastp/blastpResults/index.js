@@ -21,7 +21,7 @@ export default function blastPResults(props){
     return(
         <div>
             <h1 className={styles.title}>BLAST Search Results</h1>
-            <ResultsTable data={resultsTableProps}/>
+            {/* <ResultsTable data={resultsTableProps}/> */}
             
         </div>
     );
@@ -30,66 +30,88 @@ export default function blastPResults(props){
 
 export async function getServerSideProps(context) {
     const numberOfSequences = context.query.numberOfSequences;
-
-    const primaryDataOptions = {
-        method: "POST",
+    //Get fileNames from next api
+    const options = {
+        method: 'POST',
         headers: {
-            "content-type": "application/json",
+        'Content-Type': 'application/json',
         },
-        body: numberOfSequences,
+        body: JSON.stringify({"numberOfSequences": numberOfSequences}),
     }
-    const res = await fetch('http://localhost:3000/api/primaryData', primaryDataOptions);
-    const data = await res.json();
-
-    const seqIds = await getSeqIds(data, numberOfSequences);
-    let theBody = {
-        "seqIds": seqIds,
-        "numberOfSequences": numberOfSequences
-    }
-    let stringTheBody = JSON.stringify(theBody);
-
-    const supportingDataOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: stringTheBody,
-      }
-
-    const res2 = await fetch("http://localhost:3000/api/supportingData", supportingDataOptions);
-    const supportingData = await res2.json();
-
-    console.log("supporting data is: ", supportingData);
-
-    const genomeIds = getGenomeIds(supportingData, numberOfSequences);
-
-    let theBody2 = {
-        "genomeIds": genomeIds
-    }
-    let stringTheBody2 = JSON.stringify(theBody2);
-
-    console.log("string the body 2: ", stringTheBody2);
-
-    const options2 = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: stringTheBody2,
-      }
-
-    const res3 = await fetch("http://localhost:3000/api/genomeInfo", options2);
-    const genomeInfo = await res3.json();
     
-    let genomeInfoBeauty = beautifyGenomeInfo(genomeInfo);
+    const res1 = await fetch("http://localhost:3000/api/getFileNames", options);
+    const fileNames = await res1.json();
+    console.log("filenames are: ", fileNames);
+    
+    //Post fileNames and numberOfSequences to node backend
+    const jsonBody = {"numberOfSequences": numberOfSequences, "fileNames": fileNames};
+    const options2 = {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonBody),
+    }
+
+    const response = await fetch("http://localhost:4000", options2);
+    const data = await response.json();
+    console.log(data);
+
+    //Get data from node backend
+    const getResponse = await fetch("http://localhost:4000");
+    const fileData = await getResponse.json();
+
+    handleData(fileData.data, numberOfSequences);
+    
+    // const seqIds = await getSeqIds(data, numberOfSequences);
+    // let theBody = {
+    //     "seqIds": seqIds,
+    //     "numberOfSequences": numberOfSequences
+    // }
+    // let stringTheBody = JSON.stringify(theBody);
+
+    // const supportingDataOptions = {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: stringTheBody,
+    //   }
+
+    // const res2 = await fetch("http://localhost:3000/api/supportingData", supportingDataOptions);
+    // const supportingData = await res2.json();
+
+    // console.log("supporting data is: ", supportingData);
+
+    // const genomeIds = getGenomeIds(supportingData, numberOfSequences);
+
+    // let theBody2 = {
+    //     "genomeIds": genomeIds
+    // }
+    // let stringTheBody2 = JSON.stringify(theBody2);
+
+    // console.log("string the body 2: ", stringTheBody2);
+
+    // const options3 = {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: stringTheBody2,
+    //   }
+
+    // const res3 = await fetch("http://localhost:3000/api/genomeInfo", options3);
+    // const genomeInfo = await res3.json();
+    
+    // let genomeInfoBeauty = beautifyGenomeInfo(genomeInfo);
 
 
     return{
         props: {
-            results: data,
-            supportingDataKey: supportingData,
-            genomeInfoKey: genomeInfoBeauty,
-            numberOfSequences: numberOfSequences,
+            // results: data,
+            // supportingDataKey: supportingData,
+            // genomeInfoKey: genomeInfoBeauty,
+            // numberOfSequences: numberOfSequences,
         }
     }
 
@@ -119,4 +141,19 @@ export function beautifyGenomeInfo(genomeInfo){
         genomeInfo[i][0].primary_lifestyle = genomeInfo[i][0].primary_lifestyle.replaceAll("_", " ");
     }
     return genomeInfo;
+}
+
+export function handleData(data, numberOfSequences){
+    // let sequenceID2d = [];
+    // let totalScore2d = [];
+    // let queryCoverage2d = [];
+    // let eValue2d = [];
+    // let identityValue2d = [];
+    for(let i = 0; i < numberOfSequences; i++){
+        for(let j = 0; j < numberOfResults; j++){
+           console.log(`postion ${i} results ${j}:: `, data[i].queries[0].hits[j]);
+        }
+    }
+
+
 }
