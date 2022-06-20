@@ -1,5 +1,5 @@
 import { sql_query } from "../../lib/db";
-import { numberOfResults } from "./primaryData";
+import { numberOfResults } from "..";
 export default async function handler(req, res) {
     try{
         // const body = JSON.parse(req.body);

@@ -20,7 +20,6 @@ app.get("/", (req, res) => {
         for(let i = 0; i < numberOfSequences; i++){
             let rawData = fs.readFileSync(`/Users/simoncole/fungidb/fungi_db/${fileNames[i]}`);
             data[i] = JSON.parse(rawData);
-            console.log(data[i]);
         }
         res.send({"data": data});
     }
@@ -33,7 +32,6 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
     fileNames = req.body.fileNames;
     numberOfSequences = req.body.numberOfSequences;
-    console.log(fileNames);
     res.json({"status": 200});
 });
 

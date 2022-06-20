@@ -5,8 +5,10 @@ import mushroomIcon from "../public/mushroomIcon.png";
 
 export default function Searching(){
     return(
-        <div className={styles.searching}>
-            Searching...
+        <div className={styles.searchingPage}>
+            <div className={styles.searching}>
+                <p>Searching...</p>
+            </div>
         </div>
     );
 }

@@ -17,16 +17,16 @@ export default function BlastpSearch() {
         const data = {
           query: event.target.query.value,
         }
-
         console.log("data is: ", data);
 
         //validate data
-        const validatedData = validateData(data);
+        let validatedData = validateData(data);
         console.log("validatedData is: ", validatedData);
 
-        const numberOfSequences = {
-          "numberOfSequences": validatedData.sequences.length,
-        };
+        const numberOfSequences = validatedData.sequences.length;
+        
+        const queries = getQueries(validatedData);
+        console.log("queries are: ", queries);
     
         //converts data from form from Object to String
         const stringData = JSON.stringify(validatedData)    
@@ -41,12 +41,13 @@ export default function BlastpSearch() {
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
-
-        console.log("Result is: ", result);
-
+        console.log(typeof(queries));
         router.push({
           pathname: "/blastp/blastpResults",
-          query: numberOfSequences
+          query: {
+            "numberOfSequences": numberOfSequences,
+            "queries": queries,
+          }
         });
       }
 
@@ -54,7 +55,7 @@ export default function BlastpSearch() {
         <div>
             {!searchStatus && <form className={styles.searchForm} onSubmit={handleSubmit}>
                 <h4 id={styles.searchFieldHeader}>Enter your FASTA sequence below:</h4>
-                <textarea name="query"  id="blastpQuery" placeholder="Enter FASTA sequence..." className={styles.formInput}> </textarea>
+                <textarea name="query"  id="blastpQuery" placeholder="Enter FASTA sequence..." className={styles.formInput} />
                 <button type="submit" className={styles.searchButton}>Search</button>
             </form>}
             {searchStatus && <Searching/>}
@@ -71,14 +72,18 @@ export function validateData(data){
   let sequenceStart = 0;
   let sequenceEnd;
   let tempi, tempj;
+  //loop through the whole query
   for(let i = 0; i < query.length; i++){
+    //when start of header is encountered
     if(query.charAt(i) === ">"){
       tempi = i;
       sequenceEnd = --tempi;
+      //if it's not the first sequence
       if(sequenceEnd !== -1){
         sequences[sequencesIndex] = query.slice(sequenceStart, sequenceEnd);
         sequencesIndex++;
       }
+      //iterate along the header
       for(let j = i; j < query.length; j++){
         if(query.charAt(j) === "\n"){
           headers[headersIndex] = query.slice(i, j);
@@ -92,10 +97,55 @@ export function validateData(data){
   }
   //assign last sequence
   sequences[sequencesIndex] = query.slice(sequenceStart, query.length);
+
+  let sequencesNoBreaks = [];
+  for(let i = 0; i < sequences.length; i++){
+    let sequenceWithoutBreaks = sequences[i].replace(/[\r\n]/gm, '');
+    sequencesNoBreaks.push(sequenceWithoutBreaks);
+  }
+  console.log("after: ", sequencesNoBreaks);
+
   const results = {
     "headers": headers,
-    "sequences": sequences,
+    "sequences": sequencesNoBreaks,
   }
-
   return results;
+}
+
+export function getQueries(data){
+  try{
+    const headers = data.headers
+    console.log("why no worK? ", headers);
+    let queryStart, tempj, query, queryEnd;
+    let queries = [];
+    let encountered = 0;
+    for(let i = 0; i < headers.length; i++){
+      console.log("it is: ", headers[i].length);
+      for(let j = 0; j < headers[i].length; j++){
+        if(headers[i].charAt(j) === ">"){
+          tempj = j;
+          queryStart = ++tempj;
+        }
+        else if(headers[i].charAt(j) === "|"){
+          tempj = j;
+          queryEnd = --tempj;
+          query = headers[i].slice(queryStart, queryEnd);
+          console.log("query:: ", query);
+          queries.push(query);
+          encountered++;
+        }
+        tempj = j;
+      }
+      if(encountered === 0){
+        query = headers[i].slice(1, headers[i].length);
+        queries.push(query);
+      }
+    }
+    return queries;  
+  }
+  catch(err){
+    console.log("error in getting queries: ", err);
+    return;
+  }
+  
 }

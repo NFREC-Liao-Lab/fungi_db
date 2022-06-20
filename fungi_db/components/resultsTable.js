@@ -1,14 +1,18 @@
+import { numberOfResults } from "../pages";
 import styles from "../styles/Home.module.css"
 
 export default function ResultsTable(props) {
-    let data = props.data[0];
-    let supportingData = props.data[1];
-    let genomeInfo = props.data[2];
+    let data = props.data;
+    let supportingData = props.supportingData;
+    let genomeInfo = props.genomeInfo;
+    const query = props.query;
+
     return (
         <div>
             <table className={styles.resultsTable}>
                 <thead>
                     <tr>
+                        <th className={styles.resultsTable}>Query ID</th>
                         <th className={styles.resultsTable}>Subject Sequence ID</th>
                         <th className={styles.resultsTable}>Total Score</th>
                         <th className={styles.resultsTable}>Query Coverage</th>
@@ -24,6 +28,7 @@ export default function ResultsTable(props) {
                         data.map((dataCategory, index) =>{
                             return(
                                 <tr key={index}>
+                                    <td className={styles.resultsTable}>{query}</td>
                                     <td className={styles.resultsTable}>{dataCategory.sequenceID}</td>
                                     <td className={styles.resultsTable}>{dataCategory.totalScore}</td>
                                     <td className={styles.resultsTable}>{dataCategory.queryCoverage}</td>

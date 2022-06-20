@@ -3,7 +3,6 @@
 
 
 
-// export const numberOfResults = 10;
 
 // export default function handler(req, res) {
 //     const fs = req.fs;
