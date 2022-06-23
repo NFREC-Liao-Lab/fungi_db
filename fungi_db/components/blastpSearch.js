@@ -20,7 +20,7 @@ export default function BlastpSearch() {
         console.log("data is: ", data);
 
         //validate data
-        let validatedData = validateData(data);
+        let validatedData = await validateData(data);
         console.log("validatedData is: ", validatedData);
 
         const numberOfSequences = validatedData.sequences.length;
@@ -41,7 +41,6 @@ export default function BlastpSearch() {
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
-        console.log(typeof(queries));
         router.push({
           pathname: "/blastp/blastpResults",
           query: {
@@ -54,7 +53,7 @@ export default function BlastpSearch() {
     return(
         <div>
             {!searchStatus && <form className={styles.searchForm} onSubmit={handleSubmit}>
-                <h4 id={styles.searchFieldHeader}>Enter your FASTA sequence below:</h4>
+                <h4 id={styles.searchFieldHeader}>Enter your FASTA sequence&#40;s&#41; below:</h4>
                 <textarea name="query"  id="blastpQuery" placeholder="Enter FASTA sequence..." className={styles.formInput} />
                 <button type="submit" className={styles.searchButton}>Search</button>
             </form>}
@@ -63,7 +62,7 @@ export default function BlastpSearch() {
     );
 }
 
-export function validateData(data){
+export async function validateData(data){
   let query = data.query;
   let headers = [];
   let sequences = [];

@@ -2,8 +2,8 @@ import ResultsTable from "../../../components/resultsTable";
 import styles from "../../../styles/Home.module.css";
 import Router, { useRouter } from "next/router";
 import { numberOfResults } from "../..";
-//2254
-// "integrity": "sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w=="
+import { saveAs } from "file-saver";
+import Link from "next/link";
 
 /*In future subject sequence ID
 Taxonomy ID
@@ -18,12 +18,28 @@ export default function blastPResults(props){
     const numberOfSequences = props.numberOfSequences;
     let queries = props.queries;
     let primaryResults = props.results;
+    const fileNames = props.fileNames;
+    const csvFileName = props.csvFileName;
     let primaryData = formatPrimaryData(primaryResults, numberOfSequences);
 
+    //handledData, supportingData, genomeInfoBeauty, numberOfSequences, queries, filenames
+    let httpQuery = {};
+    httpQuery["primaryResults"] = primaryResults;
+    httpQuery["supportingData"] = supportingData;
+    httpQuery["genomeInfo"] = genomeInfo;
+    httpQuery["numberOfSequences"] = numberOfSequences;
+    httpQuery["queries"] = queries;
+    httpQuery["fileNames"] = fileNames;
 
     return(
         <div>
             <h1 className={styles.title}>BLAST Search Results</h1>
+            <Link href={{
+                pathname: "/blastp/blastpResults/download",
+                query: {httpQuery: JSON.stringify(httpQuery)},
+            }}>
+                <a target="_blank">Download Results</a>
+            </Link>
             {primaryData.map((table, index) =>{
                 return(
                     <div key={index} className={styles.table}>
@@ -31,7 +47,6 @@ export default function blastPResults(props){
                     </div>
                 );
             })}
-            {/* <ResultsTable data={resultsTableProps}/> */}
         </div>
     );
 
@@ -117,10 +132,11 @@ export async function getServerSideProps(context) {
     //fetch genomeInfo
     const res3 = await fetch("http://localhost:3000/api/genomeInfo", options3);
     const genomeInfo = await res3.json();
-    
-    
+        
     let genomeInfoBeauty = beautifyGenomeInfo(genomeInfo, numberOfSequences);
 
+    // const csvFileName = await createDonwloadFile(handledData, supportingData, genomeInfoBeauty, numberOfSequences, queries, fileNames)
+    
 
     return{
         props: {
@@ -129,6 +145,7 @@ export async function getServerSideProps(context) {
             genomeInfoKey: genomeInfoBeauty,
             numberOfSequences: numberOfSequences,
             queries: queries,
+            fileNames: fileNames,
         }
     }
 
