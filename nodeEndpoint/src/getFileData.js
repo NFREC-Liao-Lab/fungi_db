@@ -1,6 +1,8 @@
 const express = require("express");
+const cors = require("cors");
 const fs = require("fs");
 const app = express();
+app.use(cors());
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -47,4 +49,40 @@ app.post("/makeJSONFile", (req, res) => {
         }
     });
     res.json({"fileName": fileName});
+});
+
+app.post("/deleteCSVDownload", (req, res) => {
+    const fileName = req.body.fileName;
+    const filePath = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
+    console.log("the file name given is: ", fileName);
+
+    fs.unlink(filePath, (err) =>{
+        if(err){
+            console.log("there was an error: ", err);
+            res.json({"status": 500})
+        }
+        else{
+            console.log(`${fileName} was deleted from ${filePath}`);
+            res.json({"status": 200});
+        }
+    });
+
+});
+
+app.post("/deleteJSONDownload", (req, res) => {
+    const fileName = req.body.fileName;
+    const filePath = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
+    console.log("the file name given is: ", fileName);
+
+    fs.unlink(filePath, (err) =>{
+        if(err){
+            console.log("there was an error: ", err);
+            res.json({"status": 500})
+        }
+        else{
+            console.log(`${fileName} was deleted from ${filePath}`);
+            res.json({"status": 200});
+        }
+    });
+
 });
