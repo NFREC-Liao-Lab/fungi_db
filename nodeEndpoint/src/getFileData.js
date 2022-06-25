@@ -12,6 +12,50 @@ app.listen(4000, () => {
     console.log("Running express server on port 4000");
 });
 
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : '79037197',
+  database : 'fungidb'
+});
+ 
+app.post("/postTableData", (req, res) => {
+    const ID = req.body.ID;
+    console.log("Id being posted: ", ID);
+    const tableData = req.body.tableData;
+    connection.connect();
+    try{
+        let theQuery = "INSERT INTO resultsTableData(ID, tableData) VALUES (?, ?)"
+        connection.query(theQuery, [ID, tableData], function (error, results, fields){
+            if(error) throw error;
+            else res.json({"status": 200});
+        });
+    }
+    catch(error){
+        console.log("there was an error: ", error);
+        res.status({"status": 500});
+    }
+    connection.end();    
+})
+
+app.post("/getSQLData", (req, res) => {
+    const ID = JSON.parse(req.body.ID);
+    let theQuery = "SELECT tableData FROM resultsTableData WHERE ID=?;";
+    try{
+        connection.query(theQuery, [ID], function (error, results, fields){
+            if(error) throw error;
+            else{ 
+                const data = results[0].tableData;
+                res.json({"data": data});
+            };
+        });
+    }
+    catch(error){
+        console.log("There was an error ", error);
+    }
+});
+
 let fileNames = [];
 let data = [];
 let numberOfSequences;

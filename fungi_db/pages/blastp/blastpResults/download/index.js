@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { httpQuery } from "..";
+import { makeID } from "..";
 
 export default function download(props){
     //delete files after download
@@ -106,7 +108,18 @@ export default function download(props){
 
 export async function getServerSideProps(context){
     //get data
-    const query = JSON.parse(context.query.httpQuery);
+    const ID = context.query.ID;
+    const IDString = JSON.stringify({"ID": ID});
+    const sqlOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: IDString,
+    }
+    const sqlRes = await fetch("http://localhost:4000/getSQLData", sqlOptions);
+    const queryObj = await sqlRes.json();
+    const query = JSON.parse(queryObj.data);
     //make csv file
     const fileName = await createDonwloadFile(query.primaryResults, query.supportingData, query.genomeInfo, query.numberOfSequences, query.queries, query.fileNames);
     
@@ -133,6 +146,8 @@ export async function getServerSideProps(context){
     
     return {
         props: {
+            "JSONdata": JSONdata,
+            "query": query,
             "fileName": fileName,
             "JSONFileName": OutputJSONFileName.fileName,
         },

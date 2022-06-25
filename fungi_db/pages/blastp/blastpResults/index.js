@@ -21,25 +21,19 @@ export default function blastPResults(props){
     const fileNames = props.fileNames;
     const csvFileName = props.csvFileName;
     let primaryData = formatPrimaryData(primaryResults, numberOfSequences);
-
-    //handledData, supportingData, genomeInfoBeauty, numberOfSequences, queries, filenames
-    let httpQuery = {};
-    httpQuery["primaryResults"] = primaryResults;
-    httpQuery["supportingData"] = supportingData;
-    httpQuery["genomeInfo"] = genomeInfo;
-    httpQuery["numberOfSequences"] = numberOfSequences;
-    httpQuery["queries"] = queries;
-    httpQuery["fileNames"] = fileNames;
+    const ID = makeID(fileNames);
 
     return(
         <div>
             <h1 className={styles.title}>BLAST Search Results</h1>
-            <Link href={{
-                pathname: "/blastp/blastpResults/download",
-                query: {httpQuery: JSON.stringify(httpQuery)},
-            }}>
-                <a target="_blank">Download Results</a>
-            </Link>
+            <div className={styles.downloadPageLinkWrapper}>
+                <Link href={{
+                    pathname: "/blastp/blastpResults/download",
+                    query: {"ID": JSON.stringify(ID)},
+                }}>
+                    <a target="_blank" className={styles.downloadPageLink}>Download Results</a>
+                </Link>
+            </div>
             {primaryData.map((table, index) =>{
                 return(
                     <div key={index} className={styles.table}>
@@ -134,9 +128,35 @@ export async function getServerSideProps(context) {
     const genomeInfo = await res3.json();
         
     let genomeInfoBeauty = beautifyGenomeInfo(genomeInfo, numberOfSequences);
-
-    // const csvFileName = await createDonwloadFile(handledData, supportingData, genomeInfoBeauty, numberOfSequences, queries, fileNames)
     
+    //post the data in the table to sql db
+    const ID = makeID(fileNames);
+
+    const tableData = {};
+    //handledData, supportingData, genomeInfoBeauty, numberOfSequences, queries, filenames
+    tableData["primaryResults"] = handledData;
+    tableData["supportingData"] = supportingData;
+    tableData["genomeInfo"] = genomeInfoBeauty;
+    tableData["numberOfSequences"] = numberOfSequences;
+    tableData["queries"] = queries;
+    tableData["fileNames"] = fileNames;
+
+    const sqlBody = JSON.stringify({
+        "tableData": tableData,
+        "ID": ID,
+    });
+
+    const options4 = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: sqlBody,
+    }
+    const sqlRes = await fetch("http://localhost:4000/postTableData", options4);
+    const sqlStatus = await sqlRes.json();
+
+    console.log("status from sql backend is:", sqlStatus.status);
 
     return{
         props: {
@@ -252,4 +272,15 @@ export function formatPrimaryData(results, numberOfSequences){
         data.push(newDataToBePassed);
     }
     return data;
+}
+
+export function makeID(fileNames){
+    const fileName = fileNames[0];
+    let ID;
+    for(let i = 0; i < fileName.length; i++){
+        if(fileName.charAt(i) === "."){
+            ID = fileName.slice(0, i);
+        }
+    }
+    return ID;
 }
