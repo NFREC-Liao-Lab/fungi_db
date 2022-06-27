@@ -8,6 +8,7 @@ export default async function handler(req, res){
     let data = req.body;
     const numberOfSequences = data.numberOfSequences;
     let fullFilename = req.body.fileName;
+    console.log("fullFileName is: ", fullFilename);
     let filename;
     const queries = req.body.queries;
     let found = false;

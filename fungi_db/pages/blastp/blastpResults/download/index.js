@@ -9,13 +9,20 @@ export default function download(props){
     const [CSVDeleteLoadStatus, setCSVDeleteLoadStatus] = useState(false);
     const [JSONDeleteLoadStatus, setJSONDeleteLoadStatus] = useState(false);
 
+    let csvFileName;
     async function deleteCSVDownload() {
         setCSVDownloadStatus(true);
         setCSVDeleteLoadStatus(true);
         try {
+            const query = props.query;
+            //make csv file
+            console.log(props.fileName);
+            csvFileName = await createDonwloadFile(query.primaryResults, query.supportingData, query.genomeInfo, query.numberOfSequences, query.queries, props.fileName);
+
             //call node backend
-            const fileName = { "fileName": props.fileName };
             const JSONStringFileName = JSON.stringify(fileName);
+            console.log("fileName is: ", fileName);
+            console.log("JsonString: ", JSONStringFileName);
             const options = {
                 method: "POST",
                 headers: {
@@ -36,6 +43,28 @@ export default function download(props){
     }
 
     async function deleteJSONDownload() {
+        //make JSON file
+        const fileName = props.fileNames[0];
+        const JSONdata = {
+            "hanledData": query.handledData,
+            "supportingData": query.supportingData,
+            "genomeInfoKey": query.genomeInfoKey,
+            "numberOfSequences": query.numberOfSequences,
+            "queries": query.queries,
+            "fileName": JSONFileName,
+        }
+        const stringJSONData = JSON.stringify(JSONdata);
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: stringJSONData,
+        }
+        const res = await fetch("http://localhost:4000/makeJSONFile", options);
+        const OutputJSONFileName = await res.json();
+
+
         setJSONDownloadStatus(true);
         setJSONDeleteLoadStatus(true);
         try {
@@ -67,7 +96,7 @@ export default function download(props){
             <h1>Downlad Page</h1>
             {!CSVDownloadStatus && 
                 <p>
-                    Click <a href={`/${props.fileName}`} download onClick={
+                    Click <a href={`/${csvFileName}`} download onClick={
                         () => {
                             setTimeout(() => {
                             deleteCSVDownload();
@@ -109,6 +138,9 @@ export default function download(props){
 export async function getServerSideProps(context){
     //get data
     const ID = context.query.ID;
+    const fileNames = JSON.parse(context.query.fileNames);
+    const fileName = fileNames[0];
+    const CSVFileName = convertJSONToCSVName(fileName);
     const IDString = JSON.stringify({"ID": ID});
     const sqlOptions = {
         method: "POST",
@@ -117,45 +149,22 @@ export async function getServerSideProps(context){
         },
         body: IDString,
     }
+    //get table data from sql db
     const sqlRes = await fetch("http://localhost:4000/getSQLData", sqlOptions);
     const queryObj = await sqlRes.json();
     const query = JSON.parse(queryObj.data);
-    //make csv file
-    const fileName = await createDonwloadFile(query.primaryResults, query.supportingData, query.genomeInfo, query.numberOfSequences, query.queries, query.fileNames);
     
-    //make JSON file
-    const JSONFileName = convertCsvToJsonNames(fileName)
-    const JSONdata = {
-        "hanledData": query.handledData,
-        "supportingData": query.supportingData,
-        "genomeInfoKey": query.genomeInfoKey,
-        "numberOfSequences": query.numberOfSequences,
-        "queries": query.queries,
-        "fileName": JSONFileName,
-    }
-    const stringJSONData = JSON.stringify(JSONdata);
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: stringJSONData,
-    }
-    const res = await fetch("http://localhost:4000/makeJSONFile", options);
-    const OutputJSONFileName = await res.json();
     
     return {
         props: {
-            "JSONdata": JSONdata,
             "query": query,
-            "fileName": fileName,
-            "JSONFileName": OutputJSONFileName.fileName,
+            "JSONFileName": fileName,
+            "CSVFileName": CSVFileName
         },
     }
 }
 
-export async function createDonwloadFile(handledData, supportingData, genomeInfoKey, numberOfSequences, queries, fileNames){
-    const fileName = fileNames[0];
+export async function createDonwloadFile(handledData, supportingData, genomeInfoKey, numberOfSequences, queries, fileName){
     //create resultsDownload
     // console.log("handled data is", handledData);
     const downloadOptionsBody = JSON.stringify({
@@ -179,23 +188,37 @@ export async function createDonwloadFile(handledData, supportingData, genomeInfo
     return filenameRes.filename;
 }
 
-export function convertCsvToJsonNames(fileName){
-    let newFileName;
-    let found = false;
-    for(let i = 0; i < fileName.length; i++){
-        if(fileName.charAt(i) === "."){
-            newFileName = fileName.slice(0, i);
-            newFileName += ".json";
-            found = true;
+export function convertJSONToCSVName(JSONFileName){
+    let CSVFileName;
+    for(let i = 0; i < JSONFileName.length; i++){
+        if(JSONFileName.charAt(i) === "."){
+            let tempFileName = JSONFileName.slice(0, i);
+            CSVFileName = tempFileName + ".csv";
+            return CSVFileName;
         }
     }
-    if(!found){
-        console.log("error, . not found in fileName");
-        return;  
-    }
-    else{
-        return newFileName;
-    }
-
-
+    console.log("error, . not found");
+    return;
 }
+
+// export function convertCsvToJsonNames(fileNames){
+//     const fileName = fileNames[0];
+//     let newFileName;
+//     let found = false;
+//     for(let i = 0; i < fileName.length; i++){
+//         if(fileName.charAt(i) === "."){
+//             newFileName = fileName.slice(0, i);
+//             newFileName += ".json";
+//             found = true;
+//         }
+//     }
+//     if(!found){
+//         console.log("error, . not found in fileName");
+//         return;  
+//     }
+//     else{
+//         return newFileName;
+//     }
+
+
+// }

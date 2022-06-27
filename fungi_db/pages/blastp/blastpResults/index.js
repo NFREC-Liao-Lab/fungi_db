@@ -29,7 +29,7 @@ export default function blastPResults(props){
             <div className={styles.downloadPageLinkWrapper}>
                 <Link href={{
                     pathname: "/blastp/blastpResults/download",
-                    query: {"ID": JSON.stringify(ID)},
+                    query: {"ID": JSON.stringify(ID), "fileNames": JSON.stringify(fileNames)},
                 }}>
                     <a target="_blank" className={styles.downloadPageLink}>Download Results</a>
                 </Link>

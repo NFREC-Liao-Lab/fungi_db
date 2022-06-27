@@ -23,8 +23,7 @@ var connection = mysql.createConnection({
 app.post("/postTableData", (req, res) => {
     const ID = req.body.ID;
     console.log("Id being posted: ", ID);
-    const tableData = req.body.tableData;
-    connection.connect();
+    const tableData = JSON.stringify(req.body.tableData);
     try{
         let theQuery = "INSERT INTO resultsTableData(ID, tableData) VALUES (?, ?)"
         connection.query(theQuery, [ID, tableData], function (error, results, fields){
@@ -36,7 +35,6 @@ app.post("/postTableData", (req, res) => {
         console.log("there was an error: ", error);
         res.status({"status": 500});
     }
-    connection.end();    
 })
 
 app.post("/getSQLData", (req, res) => {
