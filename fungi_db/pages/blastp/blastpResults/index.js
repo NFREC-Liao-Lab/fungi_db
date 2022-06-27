@@ -29,9 +29,9 @@ export default function blastPResults(props){
             <div className={styles.downloadPageLinkWrapper}>
                 <Link href={{
                     pathname: "/blastp/blastpResults/download",
-                    query: {"ID": JSON.stringify(ID), "fileNames": JSON.stringify(fileNames)},
+                    query: {"ID": ID},
                 }}>
-                    <a target="_blank" className={styles.downloadPageLink}>Download Results</a>
+                    <a target="_blank" className={styles.downloadPageLink}>Download Results &rarr;</a>
                 </Link>
             </div>
             {primaryData.map((table, index) =>{
@@ -157,6 +157,17 @@ export async function getServerSideProps(context) {
     const sqlStatus = await sqlRes.json();
 
     console.log("status from sql backend is:", sqlStatus.status);
+
+    //delete sequenceserver results file
+    const deleteBodyString = JSON.stringify({"fileNames": fileNames});
+    const deleteOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: deleteBodyString,
+    }
+    const deleteRes = await fetch("http://localhost:4000/deleteSSResults", deleteOptions);
 
     return{
         props: {
