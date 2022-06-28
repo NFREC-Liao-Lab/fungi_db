@@ -55,7 +55,7 @@ export default function BlastpSearch() {
           console.error(err);
           router.push({
             pathname: "/searchError",
-          })
+          });
         }
       }
 
@@ -126,12 +126,10 @@ export async function validateData(data){
 export function getQueries(data){
   try{
     const headers = data.headers
-    console.log("why no worK? ", headers);
     let queryStart, tempj, query, queryEnd;
     let queries = [];
     let encountered = 0;
     for(let i = 0; i < headers.length; i++){
-      console.log("it is: ", headers[i].length);
       for(let j = 0; j < headers[i].length; j++){
         if(headers[i].charAt(j) === ">"){
           tempj = j;

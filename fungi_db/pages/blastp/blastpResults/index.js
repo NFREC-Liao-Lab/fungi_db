@@ -1,9 +1,10 @@
 import ResultsTable from "../../../components/resultsTable";
 import styles from "../../../styles/Home.module.css";
-import Router, { useRouter } from "next/router";
 import { numberOfResults } from "../..";
 import { saveAs } from "file-saver";
 import Link from "next/link";
+import { useRouter } from 'next/router'
+
 
 /*In future subject sequence ID
 Taxonomy ID
@@ -13,6 +14,10 @@ In Future Transport ID with link to our site
 export const numberOfCategories = 5;
 
 export default function blastPResults(props){
+    const router = useRouter();
+    if(props.errorStatus){
+        router.push("/searchError");
+    }
     const supportingData = props.supportingDataKey;
     const genomeInfo = props.genomeInfoKey;
     const numberOfSequences = props.numberOfSequences;
@@ -47,136 +52,166 @@ export default function blastPResults(props){
 }
 
 export async function getServerSideProps(context) {
-    const numberOfSequences = context.query.numberOfSequences;
-    let queries;
-    if(typeof(context.query.queries) === "string"){
-        queries = [];
-        queries.push(context.query.queries);
-    }
-    else{
-        queries = context.query.queries;
-    }
-    //Get fileNames from next api
-    const options = {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({"numberOfSequences": numberOfSequences}),
-    }
-
-    const res1 = await fetch("http://localhost:3000/api/getFileNames", options);
-    const fileNames = await res1.json();
-
-    //Post fileNames and numberOfSequences to node backend
-    const jsonBody = {"numberOfSequences": numberOfSequences, "fileNames": fileNames};
-    const options2 = {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonBody),
-    }
-
-    const response = await fetch("http://localhost:4000", options2);
-    const data = await response.json();
-
-    //Get data from node backend
-    const getResponse = await fetch("http://localhost:4000");
-    const fileData = await getResponse.json();
-
-    let handledData = await handleData(fileData.data, numberOfSequences);
-
-    //get sequenceIds with primaryData
-    const seqIds = await getSeqIds(handledData, numberOfSequences);
-    let theBody = {
-        "seqIds": seqIds,
-        "numberOfSequences": numberOfSequences
-    }
-    let stringTheBody = JSON.stringify(theBody);
-
-    const supportingDataOptions = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: stringTheBody,
+    let fileNames;
+    try{
+        const numberOfSequences = context.query.numberOfSequences;
+        let queries;
+        if(typeof(context.query.queries) === "string"){
+            queries = [];
+            queries.push(context.query.queries);
         }
-    
-    //fetch supportingData with seqIds
-    const res2 = await fetch("http://localhost:3000/api/supportingData", supportingDataOptions);
-    const supportingData = await res2.json();
+        else{
+            queries = context.query.queries;
+        }
+        //Get fileNames from next api
+        const options = {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({"numberOfSequences": numberOfSequences}),
+        }
 
-    const genomeIds = getGenomeIds(supportingData, numberOfSequences);
-    let theBody2 = {
-        "genomeIds": genomeIds,
-        "numberOfSequences": numberOfSequences,
-    }
-    let stringTheBody2 = JSON.stringify(theBody2);
+        const res1 = await fetch("http://localhost:3000/api/getFileNames", options);
+        fileNames = await res1.json();
 
+        //Post fileNames and numberOfSequences to node backend
+        const jsonBody = {"numberOfSequences": numberOfSequences, "fileNames": fileNames};
+        const options2 = {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonBody),
+        }
 
-    const options3 = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: stringTheBody2,
-      }
+        const response = await fetch("http://localhost:4000", options2);
+        const data = await response.json();
 
-    //fetch genomeInfo
-    const res3 = await fetch("http://localhost:3000/api/genomeInfo", options3);
-    const genomeInfo = await res3.json();
+        //Get data from node backend
+        const getResponse = await fetch("http://localhost:4000");
+        const fileData = await getResponse.json();
+
+        let handledData = await handleData(fileData.data, numberOfSequences);
+
+        //get sequenceIds with primaryData
+        const seqIds = await getSeqIds(handledData, numberOfSequences);
+        let theBody = {
+            "seqIds": seqIds,
+            "numberOfSequences": numberOfSequences
+        }
+        let stringTheBody = JSON.stringify(theBody);
+
+        const supportingDataOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: stringTheBody,
+            }
         
-    let genomeInfoBeauty = beautifyGenomeInfo(genomeInfo, numberOfSequences);
-    
-    //post the data in the table to sql db
-    const ID = makeID(fileNames);
+        //fetch supportingData with seqIds
+        const res2 = await fetch("http://localhost:3000/api/supportingData", supportingDataOptions);
+        const supportingData = await res2.json();
 
-    const tableData = {};
-    //handledData, supportingData, genomeInfoBeauty, numberOfSequences, queries, filenames
-    tableData["primaryResults"] = handledData;
-    tableData["supportingData"] = supportingData;
-    tableData["genomeInfo"] = genomeInfoBeauty;
-    tableData["numberOfSequences"] = numberOfSequences;
-    tableData["queries"] = queries;
-    tableData["fileNames"] = fileNames;
+        const genomeIds = getGenomeIds(supportingData, numberOfSequences);
+        let theBody2 = {
+            "genomeIds": genomeIds,
+            "numberOfSequences": numberOfSequences,
+        }
+        let stringTheBody2 = JSON.stringify(theBody2);
 
-    const sqlBody = JSON.stringify({
-        "tableData": tableData,
-        "ID": ID,
-    });
 
-    const options4 = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: sqlBody,
-    }
-    const sqlRes = await fetch("http://localhost:4000/postTableData", options4);
-    const sqlStatus = await sqlRes.json();
-
-    console.log("status from sql backend is:", sqlStatus.status);
-
-    //delete sequenceserver results file
-    const deleteBodyString = JSON.stringify({"fileNames": fileNames});
-    const deleteOptions = {
-        method: "POST",
-        headers: {
+        const options3 = {
+            method: "POST",
+            headers: {
             "Content-Type": "application/json",
-        },
-        body: deleteBodyString,
-    }
-    const deleteRes = await fetch("http://localhost:4000/deleteSSResults", deleteOptions);
+            },
+            body: stringTheBody2,
+        }
 
-    return{
-        props: {
-            results: handledData,
-            supportingDataKey: supportingData,
-            genomeInfoKey: genomeInfoBeauty,
-            numberOfSequences: numberOfSequences,
-            queries: queries,
-            fileNames: fileNames,
+        //fetch genomeInfo
+        const res3 = await fetch("http://localhost:3000/api/genomeInfo", options3);
+        const genomeInfo = await res3.json();
+            
+        let genomeInfoBeauty = beautifyGenomeInfo(genomeInfo, numberOfSequences);
+        
+        //post the data in the table to sql db
+        const ID = makeID(fileNames);
+
+        const tableData = {};
+        //handledData, supportingData, genomeInfoBeauty, numberOfSequences, queries, filenames
+        tableData["primaryResults"] = handledData;
+        tableData["supportingData"] = supportingData;
+        tableData["genomeInfo"] = genomeInfoBeauty;
+        tableData["numberOfSequences"] = numberOfSequences;
+        tableData["queries"] = queries;
+        tableData["fileNames"] = fileNames;
+
+        const sqlBody = JSON.stringify({
+            "tableData": tableData,
+            "ID": ID,
+        });
+
+        const options4 = {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: sqlBody,
+        }
+        const sqlRes = await fetch("http://localhost:4000/postTableData", options4);
+        const sqlStatus = await sqlRes.json();
+
+        console.log("status from sql backend is:", sqlStatus.status);
+
+        //delete sequenceserver results file
+        const deleteBodyString = JSON.stringify({"fileNames": fileNames});
+        const deleteOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: deleteBodyString,
+        }
+        const deleteRes = await fetch("http://localhost:4000/deleteSSResults", deleteOptions);
+
+        return{
+            props: {
+                results: handledData,
+                supportingDataKey: supportingData,
+                genomeInfoKey: genomeInfoBeauty,
+                numberOfSequences: numberOfSequences,
+                queries: queries,
+                fileNames: fileNames,
+            }
+        }
+    }
+    catch(err){
+        console.error(err);
+        try{
+            //delete results files if they exist
+            console.log("The fileNames in catch block are: ", fileNames);
+            const deleteBodyString = JSON.stringify({"fileNames": fileNames});
+            const deleteOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: deleteBodyString,
+            }
+            const deleteRes = await fetch("http://localhost:4000/deleteSSResults", deleteOptions);
+            if(deleteRes.status === 500){
+                throw `Error in deleting file(s) ${fileNames}`
+            }
+        }
+        catch(err){
+            console.error(err);
+        }
+        return{
+            props: {
+                errorStatus: true,
+            }
         }
     }
 
@@ -286,12 +321,17 @@ export function formatPrimaryData(results, numberOfSequences){
 }
 
 export function makeID(fileNames){
-    const fileName = fileNames[0];
-    let ID;
-    for(let i = 0; i < fileName.length; i++){
-        if(fileName.charAt(i) === "."){
-            ID = fileName.slice(0, i);
+    try{
+        const fileName = fileNames[0];
+        let ID;
+        for(let i = 0; i < fileName.length; i++){
+            if(fileName.charAt(i) === "."){
+                ID = fileName.slice(0, i);
+            }
         }
+        return ID;
     }
-    return ID;
+    catch(err){
+        console.error(err);
+    }
 }
