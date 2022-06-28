@@ -28,12 +28,12 @@ app.post("/postTableData", (req, res) => {
         let theQuery = "INSERT INTO resultsTableData(ID, tableData) VALUES (?, ?)"
         connection.query(theQuery, [ID, tableData], function (error, results, fields){
             if(error) throw error;
-            else res.json({"status": 200});
+            else res.status(200).json({});
         });
     }
     catch(error){
         console.log("there was an error: ", error);
-        res.status({"status": 500});
+        res.status(500).json({});
     }
 })
 
@@ -46,12 +46,13 @@ app.post("/getSQLData", (req, res) => {
             if(error) throw error;
             else{ 
                 const data = results[0].tableData;
-                res.json({"data": data});
+                res.status(200).json({"data": data});
             };
         });
     }
     catch(error){
         console.log("There was an error ", error);
+        res.status(500).json({});
     }
 });
 
@@ -77,7 +78,7 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
     fileNames = req.body.fileNames;
     numberOfSequences = req.body.numberOfSequences;
-    res.json({"status": 200});
+    res.status(200).json({});
 });
 
 app.post("/makeJSONFile", (req, res) => {
@@ -91,67 +92,19 @@ app.post("/makeJSONFile", (req, res) => {
             console.log(`there was an error in writing the ${fileName} file`);
         }
     });
-    res.json({"fileName": fileName});
+    res.status(200).json({"fileName": fileName});
 });
 
 app.post("/deleteCSVDownload", (req, res) => {
     const fileName = req.body.fileName;
     const filePath = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
-    if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
-        console.log("the file name given is: ", fileName);
-
-        fs.unlink(filePath, (err) =>{
-            if(err){
-                console.log("there was an error: ", err);
-                res.json({"status": 500})
-            }
-            else{
-                console.log(`${fileName} was deleted from ${filePath}`);
-                res.json({"status": 200});
-            }
-        });
-    }
-    else{
-        console.log("The csv file sent to delete is not the correct one");
-        res.json({"status": 500});
-    }
-});
-
-app.post("/deleteJSONDownload", (req, res) => {
-    const fileName = req.body.fileName;
-    const filePath = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
-    console.log("the file name given is: ", fileName);
-
-    if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
-        fs.unlink(filePath, (err) =>{
-            if(err){
-                console.log("there was an error: ", err);
-                res.json({"status": 500})
-            }
-            else{
-                console.log(`${fileName} was deleted from ${filePath}`);
-                res.json({"status": 200});
-            }
-        });
-    }
-    else{
-        console.log("the json file sent to delete is not the correct file");
-        res.json({"status": 500});
-    }
-
-});
-
-app.post("/deleteSSResults", (req, res) =>{
-    const fileNames = req.body.fileNames;
-    console.log("the filenames is: ", fileNames);
-    for(let i = 0; i < fileNames.length; i++){
-        const fileName = fileNames[i];
+    try{
         if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
-            const filePath = "/Users/simoncole/fungiDB/fungi_db/" + fileName;
-            fs.unlink(filePath, (err) => {
+            console.log("the file name given is: ", fileName);
+
+            fs.unlink(filePath, (err) =>{
                 if(err){
-                    console.log("There was an error in deleting the file from sequecne server: ", err)
-                    res.json({"status": 500});
+                    throw err;
                 }
                 else{
                     console.log(`${fileName} was deleted from ${filePath}`);
@@ -160,8 +113,66 @@ app.post("/deleteSSResults", (req, res) =>{
             });
         }
         else{
-            console.log("The file sent to delete is not the correct one");
-            res.json({"status": 500});
+            throw "The csv file sent to delete is not the correct one";
         }
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({});
+    }
+});
+
+app.post("/deleteJSONDownload", (req, res) => {
+    const fileName = req.body.fileName;
+    const filePath = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
+    console.log("the file name given is: ", fileName);
+    try{
+        if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
+            fs.unlink(filePath, (err) =>{
+                if(err){
+                    throw err;
+                }
+                else{
+                    console.log(`${fileName} was deleted from ${filePath}`);
+                    res.status(200).json({});
+                }
+            });
+        }
+        else{
+            throw "the json file sent to delete is not the correct file";
+        }
+    }
+    catch(err){
+        console.err(err);
+        res.status(500).json({})
+    }
+
+});
+
+app.post("/deleteSSResults", (req, res) =>{
+    const fileNames = req.body.fileNames;
+    console.log("the filenames is: ", fileNames);
+    try{
+        for(let i = 0; i < fileNames.length; i++){
+            const fileName = fileNames[i];
+            if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
+                const filePath = "/Users/simoncole/fungiDB/fungi_db/" + fileName;
+                fs.unlink(filePath, (err) => {
+                    if(err){
+                        throw err;
+                    }
+                    else{
+                        console.log(`${fileName} was deleted from ${filePath}`);
+                    }
+                });
+            }
+            else{
+                throw "The file sent to delete is not the correct one";
+            }
+        }
+        res.status(200).json({});
+    }
+    catch(err){
+        console.error(err);
     }
 });

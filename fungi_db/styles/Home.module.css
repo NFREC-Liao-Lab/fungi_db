@@ -212,9 +212,18 @@
   background-color: #0070f3;
 }
 
-#searchFieldHeader {
+.searchFieldHeader {
   margin: 0.1rem;
   font-size: x-large;
+}
+.searchHeaderWrapper{
+  display: flex;
+  justify-content: space-between;
+  height: 40px;
+}
+.searchHelp:hover{
+  color: #0070f3;
+  transition-duration: 00.4s;
 }
 
 .searchingPage{
@@ -279,13 +288,13 @@
   border-width: 2px;
   border-style: solid;
   padding: 1rem;
+  margin: 1rem;
 }
 
 .downloadPageLink:hover{
   color: #0070f3;
   border-color: #0070f3;
   transition-duration: 0.4s;
-  margin: 1rem;
 }
 
 .downloadButton{
@@ -318,4 +327,20 @@
   margin-bottom: 5rem;
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: medium;
+}
+
+.exampleSearchWrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.exampleHeaders{
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+.examplesContactUsLink{
+  color:#0070f3
 }

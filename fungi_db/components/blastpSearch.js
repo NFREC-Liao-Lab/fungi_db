@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import styles from '../styles/Home.module.css'
 import { useState } from 'react'
 import Searching from './searching';
+import Link from 'next/link';
 const defaultQuery = "MKNGTIRFVKHTKDALCYSWINLLLVFVPIGIASHLAHLGPEIVFAMNAVAIIPLAGLLSHATEAVAARLGDTLGALLNVSFGNAVELILFIILLAGDQIRVVQAALLGSILANLLLILGMAFLLGGLRFQEQVYNSTVTQMSACMLSLAVMSLLLPTAFHSAFSNYDTADRETLYVSRGTSVVLLLVYILYLLFQLKSHSYMYASTPQHIIDEESHPGHVMSRTAAVVMLMISTALVAVCADFMSDAIEPMVEKTNVSAAFIGLIILPIVGNAAEHVTAVTVAAKNKMDLAIGVAVGSSIQIAIFITPFIVILGWIMNKEMSLYFNIFETVALFVTAFVVNFLVLDGRSNYLEGSLLIAAYVIIALSSFFYPDGCDASPIGGQEGTC";
 
 export default function BlastpSearch() {
@@ -38,22 +39,33 @@ export default function BlastpSearch() {
           },
           body: stringData,
         }
-    
-        const response = await fetch(endpoint, options)
-        const result = await response.json()
-        router.push({
-          pathname: "/blastp/blastpResults",
-          query: {
-            "numberOfSequences": numberOfSequences,
-            "queries": queries,
-          }
-        });
+        
+        try{
+          const response = await fetch(endpoint, options)
+          const result = await response.json()
+          router.push({
+            pathname: "/blastp/blastpResults",
+            query: {
+              "numberOfSequences": numberOfSequences,
+              "queries": queries,
+            }
+          });
+        }
+        catch(err){
+          console.error(err);
+          router.push({
+            pathname: "/searchError",
+          })
+        }
       }
 
     return(
         <div>
             {!searchStatus && <form className={styles.searchForm} onSubmit={handleSubmit}>
-                <h4 id={styles.searchFieldHeader}>Enter your FASTA sequence&#40;s&#41; below:</h4>
+              <div className={styles.searchHeaderWrapper}>
+                <h4 className={styles.searchFieldHeader}>Enter your FASTA sequence&#40;s&#41; below:</h4>
+                <h4 className={styles.searchHelp}><Link href="/searchError/exampleSearch">Help</Link></h4>
+              </div>
                 <textarea name="query"  id="blastpQuery" placeholder="Enter FASTA sequence..." className={styles.formInput} />
                 <button type="submit" className={styles.searchButton}>Search</button>
             </form>}
