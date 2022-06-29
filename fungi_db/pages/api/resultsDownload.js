@@ -1,4 +1,4 @@
-import { formatPrimaryData } from "../blastp/blastpResults";
+import { formatPrimaryData } from "../blast/blastResults";
 import { numberOfResults } from "..";
 
 export const totalNumberOfCategories = 9;

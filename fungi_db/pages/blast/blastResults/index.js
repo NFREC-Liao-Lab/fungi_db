@@ -13,7 +13,7 @@ In Future Transport ID with link to our site
 */
 export const numberOfCategories = 5;
 
-export default function blastPResults(props){
+export default function blastResults(props){
     const router = useRouter();
     if(props.errorStatus){
         router.push("/searchError");
@@ -33,7 +33,7 @@ export default function blastPResults(props){
             <h1 className={styles.title}>BLAST Search Results</h1>
             <div className={styles.downloadPageLinkWrapper}>
                 <Link href={{
-                    pathname: "/blastp/blastpResults/download",
+                    pathname: "/blast/blastResults/download",
                     query: {"ID": ID},
                 }}>
                     <a target="_blank" className={styles.downloadPageLink}>Download Results &rarr;</a>

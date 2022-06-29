@@ -16,7 +16,7 @@ export default function searchError(){
                     </li>
                     <li className={styles.searchErrorListItem}>&bull;&nbsp;&nbsp;Click&nbsp; 
                         <div className={styles.searchErrorListItemLink}>                    
-                            <Link className={styles.searchErrorListItemLink} href="/blastp"> here </Link>
+                            <Link className={styles.searchErrorListItemLink} href="/blast"> here </Link>
                         </div>
                         &nbsp;to make another search.
                     </li>

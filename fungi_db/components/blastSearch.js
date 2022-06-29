@@ -5,7 +5,7 @@ import Searching from './searching';
 import Link from 'next/link';
 const defaultQuery = "MKNGTIRFVKHTKDALCYSWINLLLVFVPIGIASHLAHLGPEIVFAMNAVAIIPLAGLLSHATEAVAARLGDTLGALLNVSFGNAVELILFIILLAGDQIRVVQAALLGSILANLLLILGMAFLLGGLRFQEQVYNSTVTQMSACMLSLAVMSLLLPTAFHSAFSNYDTADRETLYVSRGTSVVLLLVYILYLLFQLKSHSYMYASTPQHIIDEESHPGHVMSRTAAVVMLMISTALVAVCADFMSDAIEPMVEKTNVSAAFIGLIILPIVGNAAEHVTAVTVAAKNKMDLAIGVAVGSSIQIAIFITPFIVILGWIMNKEMSLYFNIFETVALFVTAFVVNFLVLDGRSNYLEGSLLIAAYVIIALSSFFYPDGCDASPIGGQEGTC";
 
-export default function BlastpSearch() {
+export default function BlastSearch() {
     const [searchStatus, setSearchStatus] = useState(false);
     const router = useRouter();
     const handleSubmit = async (event) => {
@@ -44,7 +44,7 @@ export default function BlastpSearch() {
           const response = await fetch(endpoint, options)
           const result = await response.json()
           router.push({
-            pathname: "/blastp/blastpResults",
+            pathname: "/blast/blastResults",
             query: {
               "numberOfSequences": numberOfSequences,
               "queries": queries,
@@ -66,7 +66,7 @@ export default function BlastpSearch() {
                 <h4 className={styles.searchFieldHeader}>Enter your FASTA sequence&#40;s&#41; below:</h4>
                 <h4 className={styles.searchHelp}><Link href="/searchError/exampleSearch">Help</Link></h4>
               </div>
-                <textarea name="query"  id="blastpQuery" placeholder="Enter FASTA sequence..." className={styles.formInput} />
+                <textarea name="query"  id="blastQuery" placeholder="Enter FASTA sequence..." className={styles.formInput} />
                 <button type="submit" className={styles.searchButton}>Search</button>
             </form>}
             {searchStatus && <Searching/>}

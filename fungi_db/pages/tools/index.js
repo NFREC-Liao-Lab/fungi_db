@@ -31,9 +31,9 @@ export default function Tools() {
                 </a>
             </Link>
 
-            <Link href="/blastp">
+            <Link href="/blast">
                 <a className={styles.card}>
-                <h2>BlastP &rarr;</h2>
+                <h2>Blast &rarr;</h2>
                 <p>Some description here</p>
                 </a>
             </Link>
