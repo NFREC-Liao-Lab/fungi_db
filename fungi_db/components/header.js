@@ -10,8 +10,8 @@ export default function Header() {
           </a>
         </Link>
   
-        <Link href="/tools">
-          <a className={ styles.header_element }>Tools</a>
+        <Link href="/blast">
+          <a className={ styles.header_element }>BLAST</a>
         </Link>
   
         <Link href="/contactUs">
