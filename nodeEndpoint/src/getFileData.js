@@ -12,12 +12,24 @@ app.listen(4000, () => {
     console.log("Running express server on port 4000");
 });
 
+const numberOfResults = 10;
+
 var mysql = require('mysql');
+const util = require('util');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '79037197',
   database : 'fungidb'
+});
+connection.query = util.promisify(connection.query).bind(connection);
+
+connection.connect(function(err){
+    if (err) {
+        console.log("error connecting: " + err.stack);
+        return;
+    };
+    console.log("connected as... " + connection.threadId);
 });
  
 app.post("/postTableData", (req, res) => {
@@ -175,5 +187,53 @@ app.post("/deleteSSResults", (req, res) =>{
     catch(err){
         console.error(err);
         res.status(500).json({});
+    }
+});
+
+app.post("/getGenomeInfo", async (req, res) => {
+    try{
+        const genomeIds = req.body.genomeIds;
+        const numberOfSequences = req.body.numberOfSequences;
+        let results2d = [];
+        for(let i = 0; i < numberOfSequences; i++){
+            let results = [];
+            for(let j = 0; j < numberOfResults; j++) {
+                let genomeSQLQuery = "SELECT Species, primary_lifestyle FROM genomesInfo WHERE Genome_id=?";
+                results[j] = await connection.query(genomeSQLQuery, [genomeIds[i][j]]);
+                console.log("results sub j", results[j]);
+            }
+            console.log("results are: ", results);
+            results2d.push(results);
+        }
+        res.status(200).json(results2d);
+    }
+    catch(err){
+        res.status(500).json({})
+    }
+});
+
+app.post("/getSupportingData", async (req, res) => {
+    try{
+        // const body = JSON.parse(req.body);
+        const seqIds = req.body.seqIds;
+        const numberOfSequences = req.body.numberOfSequences;
+        const results = [];
+        for(let j = 0; j < numberOfSequences; j++){
+            let tempResults = [];
+            for(let i = 0; i < numberOfResults; i++){
+                let supportingDataQuery = "SELECT Transporter_id, Genome_id FROM proteinSeqID WHERE SeqID=?"
+                tempResults[i] = await connection.query(supportingDataQuery, [seqIds[j][i]]);
+                // tempResults[i] = await sql_query(
+                //     `SELECT Transporter_id, Genome_id
+                //     FROM proteinSeqID
+                //     WHERE SeqID='${seqIds[j][i]}'
+                // `);
+            }
+            results.push(tempResults);
+        }
+        return res.status(200).json(results);
+    }
+    catch (e){
+        res.status(500).json({message: e.message})
     }
 });
