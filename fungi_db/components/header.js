@@ -9,6 +9,10 @@ export default function Header() {
             <b>FungiDB</b>
           </a>
         </Link>
+
+        <Link href="/databasePages">
+          <a className={ styles.header_element}>Database</a>
+        </Link>
   
         <Link href="/blast">
           <a className={ styles.header_element }>BLAST</a>

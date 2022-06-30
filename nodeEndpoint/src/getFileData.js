@@ -221,13 +221,8 @@ app.post("/getSupportingData", async (req, res) => {
         for(let j = 0; j < numberOfSequences; j++){
             let tempResults = [];
             for(let i = 0; i < numberOfResults; i++){
-                let supportingDataQuery = "SELECT Transporter_id, Genome_id FROM proteinSeqID WHERE SeqID=?"
+                let supportingDataQuery = "SELECT Transporter_id, Genome_id FROM proteinSeqID WHERE SeqID=?";
                 tempResults[i] = await connection.query(supportingDataQuery, [seqIds[j][i]]);
-                // tempResults[i] = await sql_query(
-                //     `SELECT Transporter_id, Genome_id
-                //     FROM proteinSeqID
-                //     WHERE SeqID='${seqIds[j][i]}'
-                // `);
             }
             results.push(tempResults);
         }
@@ -237,3 +232,47 @@ app.post("/getSupportingData", async (req, res) => {
         res.status(500).json({message: e.message})
     }
 });
+
+app.post("/retrieveSpeciesData", async (req, res) => {
+    try{
+        const species = req.body.search;
+        //get genus from binomial nomenclature
+        const genus = getGenus(species);
+        console.log("species in back end is: ", species);
+
+        //get data from genome db
+        let speciesGenomeSQLQuery = "SELECT Genome_id, kingdom, phylum, class, `order`, family, primary_lifestyle FROM genomesInfo WHERE Species=?";
+        const genomeData = await connection.query(speciesGenomeSQLQuery, [species]);
+        const genomeID = genomeData[0].Genome_id;
+
+        //get data from seqID db
+        let speciesSeqIDSQLQuery = "SELECT SeqID, Transporter_id FROM proteinSeqID WHERE Genome_id=?";
+        const seqIDData = await connection.query(speciesSeqIDSQLQuery, [genomeID])
+
+        //get data from fungal traits db using genus
+        let fungalTraitsSQLQuery = "SELECT Aquatic_habitat_template, Ectomycorrhiza_exploration_type_template, Secondary_lifestyle FROM fungalTraits WHERE genus=?";
+        const fungalTraitsData = await connection.query(fungalTraitsSQLQuery, [genus]);
+
+        const data = {
+            "genomeData": genomeData,
+            "seqIDData": seqIDData,
+            "fungalTraitsData": fungalTraitsData,
+        }
+        res.status(200).json({"data": data});
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({});
+    }
+});
+
+function getGenus(species){
+    let genus;
+    for(let i = 0; i < species.length; i++){
+        if(species.charAt(i) === " "){
+            genus = species.slice(0, i);
+            return genus;
+        }
+    }
+    throw "Space not found";
+}
