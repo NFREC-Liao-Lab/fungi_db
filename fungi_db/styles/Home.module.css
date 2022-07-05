@@ -367,3 +367,64 @@
 .searchErrorListItemLink{
   color: #0070f3;
 }
+
+.dbSearchOption{
+  border-color: black;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 2px;
+  padding: 1rem;
+  margin: 2rem;
+}
+
+.searchOptions{
+  display: flex;
+  justify-content: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.searchField{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.button{
+  border-style: solid;
+  border-color: black;
+  border-radius: 5px;
+  border-width: 2px;
+  padding: 1rem;
+  margin: 2rem;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: medium;
+  
+}
+
+.button:hover{
+  color:#0070f3;
+  transition-duration: 0.4s;
+  border-color: #0070f3;
+  cursor: pointer;
+}
+
+.searchField .button {
+  background-color: aliceblue;
+  margin-top: 1rem;
+}
+
+.directSearchSearchWrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 2rem;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.directSearchSearchField{
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  width: 25rem;
+  height: 2rem;
+}

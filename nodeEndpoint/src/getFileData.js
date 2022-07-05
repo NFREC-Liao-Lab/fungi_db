@@ -233,30 +233,76 @@ app.post("/getSupportingData", async (req, res) => {
     }
 });
 
-app.post("/retrieveSpeciesData", async (req, res) => {
+app.post("/retrieveTaxonomySearchData", async (req, res) => {
     try{
-        const species = req.body.search;
-        //get genus from binomial nomenclature
-        const genus = getGenus(species);
-        console.log("species in back end is: ", species);
+        let search = req.body.search;
+        let taxonomyLevel = req.body.taxonomyLevel;
+        let levelToDisplay = req.body.levelToDisplay;
+        let filters = req.body.filters;
+
+        console.log("filters are: ", filters);
+
+        if(taxonomyLevel == "order"){
+            taxonomyLevel = "orderColumn";
+        }
+        else if(levelToDisplay == "order"){
+            levelToDisplay = "orderColumn"
+        }
+
+        let speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE "
+
+        // //loop through filters and create WHERE portion of query
+        // for(let i = 0; i < filters.length; i++){
+        //     if(filters[i] !== "none" && i !== filters.length-2){
+        //         speciesGenomeSQLQueryWhere += filters[i] + " && "
+        //     }
+        //     else if(filters[i] !== "none"){
+
+        //     }
+
+        // }
 
         //get data from genome db
-        let speciesGenomeSQLQuery = "SELECT Genome_id, kingdom, phylum, class, `order`, family, primary_lifestyle FROM genomesInfo WHERE Species=?";
-        const genomeData = await connection.query(speciesGenomeSQLQuery, [species]);
-        const genomeID = genomeData[0].Genome_id;
+        switch(taxonomyLevel) {
+            case "phylum":
+                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE phylum=?;";
+                break;
+            case "class":
+                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE class=?;";
+                break;
+            case "orderColumn":
+                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE orderColumn=?;";
+                break;
+            case "family":
+                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE family=?;";
+                break;
+            case "genus":
+                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE genus=?;";
+                break;
+            case "Species":
+                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE Species=?;";
+                break;
+            default:
+                throw `${taxonomyLevel} is not a valid taxonomic level`
+        }
 
-        //get data from seqID db
-        let speciesSeqIDSQLQuery = "SELECT SeqID, Transporter_id FROM proteinSeqID WHERE Genome_id=?";
-        const seqIDData = await connection.query(speciesSeqIDSQLQuery, [genomeID])
+        const speciesGenomeSQLQuery = "SELECT " + levelToDisplay + speciesGenomeSQLQueryWhere;
 
-        //get data from fungal traits db using genus
-        let fungalTraitsSQLQuery = "SELECT Aquatic_habitat_template, Ectomycorrhiza_exploration_type_template, Secondary_lifestyle FROM fungalTraits WHERE genus=?";
-        const fungalTraitsData = await connection.query(fungalTraitsSQLQuery, [genus]);
+        const genomeData = await connection.query(speciesGenomeSQLQuery, [search]);
+        // const genomeID = genomeData[0].Genome_id;
+
+        // //get data from seqID db
+        // let speciesSeqIDSQLQuery = "SELECT SeqID, Transporter_id FROM proteinSeqID WHERE Genome_id=?";
+        // const seqIDData = await connection.query(speciesSeqIDSQLQuery, [genomeID])
+
+        // //get data from fungal traits db using genus
+        // let fungalTraitsSQLQuery = "SELECT Aquatic_habitat_template, Ectomycorrhiza_exploration_type_template, Secondary_lifestyle FROM fungalTraits WHERE genus=?";
+        // const fungalTraitsData = await connection.query(fungalTraitsSQLQuery, [genus]);
 
         const data = {
             "genomeData": genomeData,
-            "seqIDData": seqIDData,
-            "fungalTraitsData": fungalTraitsData,
+            // "seqIDData": seqIDData,
+            // "fungalTraitsData": fungalTraitsData,
         }
         res.status(200).json({"data": data});
     }

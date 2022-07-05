@@ -113,7 +113,6 @@ export async function getServerSideProps(context) {
         //fetch supportingData with seqIds
         const res2 = await fetch("http://localhost:4000/getSupportingData", supportingDataOptions);
         const supportingData = await res2.json();
-
         const genomeIds = getGenomeIds(supportingData, numberOfSequences);
         let theBody2 = {
             "genomeIds": genomeIds,
@@ -133,7 +132,6 @@ export async function getServerSideProps(context) {
         //fetch genomeInfo
         const res3 = await fetch("http://localhost:4000/getGenomeInfo", options3);
         const genomeInfo = await res3.json();
-        console.log("genomeInfo is: ", genomeInfo);
         let genomeInfoBeauty = beautifyGenomeInfo(genomeInfo, numberOfSequences);
         
         //post the data in the table to sql db

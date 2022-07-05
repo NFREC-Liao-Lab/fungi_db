@@ -6,7 +6,7 @@ export default function Header() {
       <div className={ styles.header }>
         <Link href="/">
           <a className={ styles.header_element }>
-            <b>FungiDB</b>
+            <b>FungaBase</b>
           </a>
         </Link>
 
