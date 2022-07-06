@@ -428,3 +428,40 @@
   width: 25rem;
   height: 2rem;
 }
+
+.taxonomyListWrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.taxonomyList{
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: medium;
+  width: 50%;
+}
+
+.taxonomyListItem{
+  padding: 0.5rem;
+  margin: 1rem;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 2px;
+}
+.taxonomyListItem:hover{
+  color: #0070f3;
+  border-color: #0070f3;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.taxonomyListTitle{
+  margin: 0rem;
+  font-size: large;
+  text-decoration: underline;
+  text-decoration-style: solid;
+}

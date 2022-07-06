@@ -1,4 +1,3 @@
-import { filter } from "d3";
 import { useRouter } from "next/router";
 import TaxonomyResultsTable from "../../../components/taxonomyResultsTable";
 import styles from "../../../styles/Home.module.css";
@@ -19,21 +18,23 @@ export default function searchResult(props){
     const taxonomyLevel = props.taxonomyLevel;
     const capitalizedTaxonomyLevel = capitalizeFirstLetter(taxonomyLevel);
     const capitalizedLevelToDisplay = capitalizeFirstLetter(levelToDisplay);
-    const unduplicatedData = removeDuplicates(data.genomeData, levelToDisplay);
+    const genomeData = removeNulls(data.genomeData, levelToDisplay);
     const pluralizedTaxonomyLevelToDisplay = pluralizeTaxonomyLevel(capitalizedLevelToDisplay);
-    console.log("data: ", unduplicatedData);
     return(
         <div>
             <h1 className={styles.title}>{capitalizedTaxonomyLevel}: {props.search}</h1>
-
-            <h4>{pluralizedTaxonomyLevelToDisplay} in our database:</h4>
-            <ul>
-                {
-                    unduplicatedData.map((element) => (
-                        <TaxonomyResultsTable filters={filters} data={element} levelToDisplay={levelToDisplay}/>
-                    ))
-                }
-            </ul>
+            <div className={styles.taxonomyListWrapper}>
+                <h4 className={styles.taxonomyListTitle}>{pluralizedTaxonomyLevelToDisplay} in our database:</h4>
+                <ul className={styles.taxonomyList}>
+                    {
+                        genomeData.map((element) => (
+                            <div className={styles.taxonomyListItem}>
+                                <TaxonomyResultsTable search={props.search} filters={filters} data={element} levelToDisplay={levelToDisplay}/>
+                            </div>
+                        ))
+                    }
+                </ul>
+            </div>
 
         </div>
     );
@@ -41,24 +42,20 @@ export default function searchResult(props){
 
 export async function getServerSideProps(context){
     try{
-        const search = context.query.search;
+        let search = JSON.parse(context.query.search);
         let taxonomyLevel = context.query.taxonomyLevel;
-        let filters = context.query.filters;
-        
-        console.log(filters);
-        if(filters[0] === "none"){
-            filters[0] = taxonomyLevel;
-        }
-        else if(filters[1] === "none"){
-            filters[1] = taxonomyLevel;
-        }
-        else{
-            filters.push(taxonomyLevel);
-        }
-
+        let filters = JSON.parse(context.query.filters);
         console.log("tax level: ", taxonomyLevel);
 
-        let levelToDisplay = getNextLevel(taxonomyLevel);
+        filters.push(taxonomyLevel);
+
+        let levelToDisplay;
+        if(taxonomyLevel !== "species"){
+            levelToDisplay = getNextLevel(taxonomyLevel);
+        }
+        else{
+
+        }
 
         const retrieveSpeciesDataOptions = {
             method: 'POST',
@@ -94,33 +91,14 @@ export async function getServerSideProps(context){
     }
 }
 
-export function removeDuplicates(data, levelToDisplay){
-    let unduplicatedData = [];
-    data.map((element) => {
-        //if new array contains, don't add
-        let found = false
-        //see if curr element is already in unduplicated
-        for(let i = 0; i < unduplicatedData.length; i++){
-            if(unduplicatedData[i][levelToDisplay] === element[levelToDisplay]){
-                found = true;
-            }
-        }
-        if(!found){
-            unduplicatedData.push(element);
-        }
-    })
-
-    console.log(unduplicatedData);
-    return unduplicatedData;
-}
-
 export function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export function getNextLevel(taxonomyLevel){
-    const taxonomyLevels = ["phylum", "class", "order", "family", "genus"];
+    const taxonomyLevels = ["phylum", "class", "order", "family", "genus", "species"];
     let levelToDisplay;
+    console.log("taxLevel here: ", taxonomyLevel);
     //select the taxonomy level after the searched level
     taxonomyLevels.map((element, index) =>{
         if(element === taxonomyLevel){
@@ -131,7 +109,7 @@ export function getNextLevel(taxonomyLevel){
         throw "taxonomy level is not valid";
     }
     return levelToDisplay;
-    
+
 }   
 
 export function pluralizeTaxonomyLevel(level){
@@ -147,4 +125,17 @@ export function pluralizeTaxonomyLevel(level){
         pluralLevel = level + "s";
     }
     return pluralLevel;
+}
+
+export function removeNulls(genomeData, levelToDisplay){
+    console.log("genome Data is: ", genomeData);
+    //loop through arr, if null remove
+    for(let i = 0; i < genomeData.length; i++){
+        if(!genomeData[i][levelToDisplay]){
+            genomeData.splice(i, 1);
+        }
+    }
+
+    return genomeData;
+
 }

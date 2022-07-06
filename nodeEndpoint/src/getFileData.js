@@ -240,8 +240,11 @@ app.post("/retrieveTaxonomySearchData", async (req, res) => {
         let levelToDisplay = req.body.levelToDisplay;
         let filters = req.body.filters;
 
+        if(filters.includes("order")){
+            const index = filters.indexOf("order");
+            filters[index] = "orderColumn";
+        }
         console.log("filters are: ", filters);
-
         if(taxonomyLevel == "order"){
             taxonomyLevel = "orderColumn";
         }
@@ -251,58 +254,31 @@ app.post("/retrieveTaxonomySearchData", async (req, res) => {
 
         let speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE "
 
-        // //loop through filters and create WHERE portion of query
-        // for(let i = 0; i < filters.length; i++){
-        //     if(filters[i] !== "none" && i !== filters.length-2){
-        //         speciesGenomeSQLQueryWhere += filters[i] + " && "
-        //     }
-        //     else if(filters[i] !== "none"){
-
-        //     }
-
-        // }
-
-        //get data from genome db
-        switch(taxonomyLevel) {
-            case "phylum":
-                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE phylum=?;";
-                break;
-            case "class":
-                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE class=?;";
-                break;
-            case "orderColumn":
-                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE orderColumn=?;";
-                break;
-            case "family":
-                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE family=?;";
-                break;
-            case "genus":
-                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE genus=?;";
-                break;
-            case "Species":
-                speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE Species=?;";
-                break;
-            default:
-                throw `${taxonomyLevel} is not a valid taxonomic level`
+        //loop through filters and create WHERE portion of query
+        for(let i = 0; i < filters.length; i++){
+            //if not the last filter
+            if(i !== filters.length-1){
+                speciesGenomeSQLQueryWhere += filters[i] + "=? && "
+            }
+            else{
+                speciesGenomeSQLQueryWhere += filters[i] + "=?;"
+            }
         }
 
-        const speciesGenomeSQLQuery = "SELECT " + levelToDisplay + speciesGenomeSQLQueryWhere;
+        console.log(speciesGenomeSQLQueryWhere);
 
-        const genomeData = await connection.query(speciesGenomeSQLQuery, [search]);
-        // const genomeID = genomeData[0].Genome_id;
+        const speciesGenomeSQLQuery = "SELECT DISTINCT " + levelToDisplay + speciesGenomeSQLQueryWhere;
+        console.log(speciesGenomeSQLQuery);
+        console.log(search);
+        let genomeData = await connection.query(speciesGenomeSQLQuery, search);
+        console.log("genomeData is: ", genomeData);
 
-        // //get data from seqID db
-        // let speciesSeqIDSQLQuery = "SELECT SeqID, Transporter_id FROM proteinSeqID WHERE Genome_id=?";
-        // const seqIDData = await connection.query(speciesSeqIDSQLQuery, [genomeID])
-
-        // //get data from fungal traits db using genus
-        // let fungalTraitsSQLQuery = "SELECT Aquatic_habitat_template, Ectomycorrhiza_exploration_type_template, Secondary_lifestyle FROM fungalTraits WHERE genus=?";
-        // const fungalTraitsData = await connection.query(fungalTraitsSQLQuery, [genus]);
+        //if it is orderColumn change it to order
+        genomeData = checkForOrderColumn(genomeData);
+        console.log("genomeData after is: ", genomeData);
 
         const data = {
             "genomeData": genomeData,
-            // "seqIDData": seqIDData,
-            // "fungalTraitsData": fungalTraitsData,
         }
         res.status(200).json({"data": data});
     }
@@ -321,4 +297,19 @@ function getGenus(species){
         }
     }
     throw "Space not found";
+}
+
+function checkForOrderColumn(genomeData){
+    keys = Object.keys(genomeData[0]);
+    console.log("keys are", keys);
+    if(keys[0] === "orderColumn"){
+        for(let i = 0; i < genomeData.length; i++){
+            genomeData[i]["order"] = genomeData[i]["orderColumn"];
+            delete genomeData[i]["orderColumn"];
+        }
+        return genomeData;
+    }
+    else{
+        return genomeData;
+    }
 }

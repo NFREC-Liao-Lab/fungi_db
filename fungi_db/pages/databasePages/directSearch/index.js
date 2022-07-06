@@ -10,8 +10,9 @@ export default function directSearch(){
     //Query sql genome db and look for that species in getServerSideProps calling node endpoint
     const handleSearch = (event) => {
         event.preventDefault();
-        const search = event.target[0].value;
-        const filters = ["none", "none"];
+        const search = JSON.stringify([event.target[0].value]);
+        const filters = JSON.stringify([]);
+        console.log("before", typeof(filters));
         if(taxonomyLevelState !== "binomialNomenclature"){
             router.push({
                 pathname: `/databasePages/taxonomyResults/${search}`,
