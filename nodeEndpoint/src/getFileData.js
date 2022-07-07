@@ -302,6 +302,22 @@ app.get("/getPhylums", async (req, res) => {
     }
 })
 
+app.post("/retrieveSpeciesData", async (req, res) =>{
+    const species = req.body.species[0];
+
+    //get genomeID from genomesInfo 
+    const getGenomeIDQuery = "SELECT Genome_id FROM genomesInfo WHERE Species=?;";
+    console.log("species ", species);
+    const genomeIDSQL = await connection.query(getGenomeIDQuery, [species]);
+    const genomeID = genomeIDSQL[0].Genome_id;
+
+    //use genomeID to get transporters and seqID
+    const proteinSeqIDQuery = "SELECT DISTINCT SeqID, Transporter_level4 FROM proteinSeqID WHERE Genome_id=?;"
+    const proteinSeqIDSQL = await connection.query(proteinSeqIDQuery, [genomeID]);
+    
+    res.status(200).json({"data": proteinSeqIDSQL});
+})
+
 
 function checkForOrderColumn(genomeData){
     keys = Object.keys(genomeData[0]);

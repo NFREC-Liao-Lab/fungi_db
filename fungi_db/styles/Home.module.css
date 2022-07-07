@@ -440,7 +440,6 @@
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
-  font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: medium;
   width: 50%;
 }
@@ -451,6 +450,7 @@
   border-style: solid;
   border-radius: 5px;
   border-width: 2px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
 .taxonomyListItem:hover{
   color: #0070f3;
@@ -488,4 +488,9 @@
   display: flex;
   width: 100%;
   margin-left: 1rem;
+}
+
+.transporterChart{
+  width: 400px;
+  height: 400px;
 }

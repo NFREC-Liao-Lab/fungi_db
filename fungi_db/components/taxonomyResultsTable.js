@@ -26,7 +26,7 @@ export default function TaxonomyResultsTable(props){
         nextLevelPath = {
             pathname: `/databasePages/speciesResults/${element[levelToDisplay]}`,
             query: {
-                "species": JSON.stringify(element[levelToDisplay]),
+                "species": JSON.stringify([element[levelToDisplay]]),
             }
         }
     }

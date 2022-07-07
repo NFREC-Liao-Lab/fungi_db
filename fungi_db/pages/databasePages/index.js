@@ -7,8 +7,6 @@ export default function directSearch(props){
     const [taxonomyLevelState, setTaxonomyLevelState] = useState({"value": "binomialNomenclature"});
     const router = useRouter();
 
-    //http://localhost:3000/databasePages/taxonomyResults/[%22Ascomycota%22]?search=%5B%22Ascomycota%22%5D&taxonomyLevel=phylum&filters=%5B%5D
-
     //get phylums as array of objects
     const phylums = props.phylums.phylums;
 
@@ -55,7 +53,7 @@ export default function directSearch(props){
                                 "filters": JSON.stringify([]),
                             }
                             }}>
-                        <h4 className={styles.taxonomyListItem} key={index}>{element.phylum}</h4>
+                        <p className={styles.taxonomyListItem} key={index}>{element.phylum}</p>
                         </Link>
                     ))}
                 </div>
