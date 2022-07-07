@@ -465,3 +465,9 @@
   text-decoration: underline;
   text-decoration-style: solid;
 }
+
+.taxonomyRunningName{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

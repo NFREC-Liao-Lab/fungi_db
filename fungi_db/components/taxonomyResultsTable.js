@@ -23,13 +23,15 @@ export default function TaxonomyResultsTable(props){
     let searchJSON = JSON.stringify(search);
 
 
-    // if(nextLevel === "species"){
-    //     nextLevelPath = {
-    //         pathname: `/databasePages/speciesResults/${element[levelToDisplay]}`,
-    //         query: {}
-    //     }
-    // }
-    // else{
+    if(levelToDisplay === "species"){
+        nextLevelPath = {
+            pathname: `/databasePages/speciesResults/${element[levelToDisplay]}`,
+            query: {
+                "species": JSON.stringify(element[levelToDisplay]),
+            }
+        }
+    }
+    else{
             nextLevelPath = {
             pathname: `/databasePages/taxonomyResults/${element[levelToDisplay]}`,
             query: {
@@ -39,7 +41,7 @@ export default function TaxonomyResultsTable(props){
                 "search": searchJSON,
             }
         }
-    // }
+    }
     
     return(
         <div>

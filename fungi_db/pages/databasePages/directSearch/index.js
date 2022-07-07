@@ -27,7 +27,7 @@ export default function directSearch(){
             router.push({
                 pathname:  `/databasePages/speciesResults/${search}`,
                 query: {
-                    "search": search,
+                    "species": search,
                 }
             })
         }

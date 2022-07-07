@@ -20,11 +20,19 @@ export default function searchResult(props){
     const capitalizedLevelToDisplay = capitalizeFirstLetter(levelToDisplay);
     const genomeData = removeNulls(data.genomeData, levelToDisplay);
     const pluralizedTaxonomyLevelToDisplay = pluralizeTaxonomyLevel(capitalizedLevelToDisplay);
+    const search = props.search;
     return(
         <div>
-            <h1 className={styles.title}>{capitalizedTaxonomyLevel}: {props.search}</h1>
+            <h1 className={styles.title}>Select the Next Taxonomic Rank</h1>
+            <div className={styles.taxonomyRunningName}>
+            {
+                    search.map((element, index) =>(
+                        <p>{filters[index]}: {element},&nbsp;</p>
+                    ))
+            }
+            </div>
             <div className={styles.taxonomyListWrapper}>
-                <h4 className={styles.taxonomyListTitle}>{pluralizedTaxonomyLevelToDisplay} in our database:</h4>
+                <h4 className={styles.taxonomyListTitle}>{pluralizedTaxonomyLevelToDisplay} Available</h4>
                 <ul className={styles.taxonomyList}>
                     {
                         genomeData.map((element) => (
@@ -120,6 +128,9 @@ export function pluralizeTaxonomyLevel(level){
     else if(level === "Family"){
         level = level.slice(0, (level.length)-1)
         pluralLevel = level + "ies";
+    }
+    else if(level === "Species"){
+        pluralLevel = level;
     }
     else{
         pluralLevel = level + "s";
