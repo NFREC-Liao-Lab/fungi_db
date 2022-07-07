@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { getNextLevel } from "../pages/databasePages/taxonomyResults/[taxonomySearchResult]";
 
 
 

@@ -288,16 +288,20 @@ app.post("/retrieveTaxonomySearchData", async (req, res) => {
     }
 });
 
-function getGenus(species){
-    let genus;
-    for(let i = 0; i < species.length; i++){
-        if(species.charAt(i) === " "){
-            genus = species.slice(0, i);
-            return genus;
-        }
+app.get("/getPhylums", async (req, res) => {
+    try{
+        //query sql db to get phylums
+        //return phylums
+        const getPhylumsQuery = "SELECT DISTINCT phylum FROM genomesInfo;"
+        const phylums = await connection.query(getPhylumsQuery);
+        res.status(200).json({"phylums": phylums});
+    }   
+    catch(err){
+        console.error(err);
+        res.status(500).json({});
     }
-    throw "Space not found";
-}
+})
+
 
 function checkForOrderColumn(genomeData){
     keys = Object.keys(genomeData[0]);
