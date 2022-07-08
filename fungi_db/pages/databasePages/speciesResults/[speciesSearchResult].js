@@ -3,47 +3,81 @@ import { Pie } from "react-chartjs-2";
 import styles from "../../../styles/Home.module.css";
 
 export default function speciesSearchResult(props){
-    const numberOfTransporters = 5;
+    const numberOfTransporters = 10;
     const speciesData = props.speciesData;
 
-    const transporterDensity = getTransporterDensity(speciesData, numberOfTransporters);
-    console.log(transporterDensity.labels)
-    console.log(transporterDensity.counts)
-    const pieData = {
-        labels: transporterDensity.labels,
+    //Full Taxonomy, GenomeID, Publication Link, JGI Link, Species Wikipedia Link, TaxID, 
+
+    const transporterDensityLevel4 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level4");
+    const transporterDensityLevel5 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_id")
+
+
+    //data for charts
+    const level4PieData = {
+        labels: transporterDensityLevel4.labels,
         datasets: [{
             label: "transporters",
-            data: transporterDensity.counts,
+            data: transporterDensityLevel4.counts,
             backgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
+                'rgb(89, 41, 65)',
+                'rgb(73, 132, 103)',
+                'rgb(154, 152, 181)',
+                'rgb(181, 248, 254)',
+                'rgb(16, 255, 203)',
             ],
           }]
     };
+    const level5PieData = {
+        labels: transporterDensityLevel5.labels,
+        datasets: [{
+            label: "transporters",
+            data: transporterDensityLevel5.counts,
+            backgroundColor: [
+                'rgb(6, 141, 157)',
+                'rgb(83, 89, 154)',
+                'rgb(109, 157, 197)',
+                'rgb(128, 222, 217)',
+                'rgb(174, 236, 239)',
+            ],
+          }]
+    };
+
 
     
 
     return(
         <div>
-            <h1>
+            <h1 className={styles.title}>
                 {props.species}
             </h1>
-            <div className={styles.transporterChart}>
-                <Pie data={pieData}></Pie>
-            </div>
-
-            <div>
-                <table>
-                    {speciesData.map((element, index) => (
-                        <tr key={index}>
-                            <td>{element.SeqID}</td>
-                            <td>{element.Transporter_level4}</td>
-                        </tr>
-                    ))}
-                </table>
+            <div className={styles.transporterChartsWrapper}>
+                <div className={styles.transporterChart}>
+                    <h3>Genus Level Transporters</h3>
+                    <Pie data={level4PieData}></Pie>
+                </div>
+                <div className={styles.transporterChart}>
+                    <h3>Species Level Transporters</h3>
+                    <Pie data={level5PieData}></Pie>
+                </div>
+                <div>
+                    <h3 id={styles.tableTitle}>Full Species Transporter Gene Data</h3>
+                    <table className={styles.resultsTable}>
+                        <thead>
+                            <tr>
+                                <th className={styles.resultsTable}>Sequence ID</th>
+                                <th className={styles.resultsTable}>Transporter ID</th>
+                                <th className={styles.resultsTable}>Transporter Quantity</th>
+                            </tr>
+                        </thead>
+                        {transporterDensityLevel5.tableData.map((element, index) => (
+                            <tr key={index}>
+                                <td className={styles.resultsTable}>{element.seqID}</td>
+                                <td className={styles.resultsTable}>{element.transporter}</td>
+                                <td className={styles.resultsTable}>{element.count}</td>
+                            </tr>
+                        ))}
+                    </table>
+                </div>
             </div>
         </div>
     );
@@ -74,18 +108,20 @@ export async function getServerSideProps(context){
     }
 }
 
-export function getTransporterDensity(data, numberOfTransporters){
+export function getTransporterDensity(originalData, numberOfTransporters, level){
     //Array of objects where each object has transporter value and number there are
+    
+    console.log(originalData[0][level]);
     //get array of transporters
     let transporters = [];
-    data.map((element, index) => {
-        transporters.push(element.Transporter_level4);
+    originalData.map((element, index) => {
+        transporters.push(element[level]);
     });
 
     //sort so matching transporters are next to each other
     transporters.sort();
 
-    data = [];
+    let data = [];
     for(let i = 0; i < transporters.length; i++){
         if(transporters[i] === transporters[i-1]){
             //if this transporter is the same as previous
@@ -93,20 +129,31 @@ export function getTransporterDensity(data, numberOfTransporters){
         }
         else{
             //if it's  a new transporter
-            let obj = {"transporter": transporters[i], "count": 1};
+            //get matching seqID
+            let seqID;
+            for(let j = 0; j < originalData.length; j++){
+                if(originalData[j][level] === transporters[i]){
+                    seqID = originalData[j].SeqID;
+                }
+            }
+            let obj = {"transporter": transporters[i], "count": 1, "seqID": seqID};
             data.push(obj);
         }
     }
 
     //sort data by count
-    data.sort((a, b) => (a.count > b.count) ? 1 : -1)
-    // for(let j = 300; j < data.length; j++){
-    //     console.log(data[j])
-    // }
+    data.sort((a, b) => (a.count < b.count) ? 1 : -1)
+    for(let j = 300; j < data.length; j++){
+        console.log(data[j])
+    }
+
+
+    //make table data that is array of objects that have props of seqID, transporterID, and quantity
+
 
     let finalDataObjects = [];
-    const stopCondition = data.length-(numberOfTransporters+1);
-    for(let i = data.length-1; i > stopCondition; i--){
+    // const stopCondition = data.length-(numberOfTransporters+1);
+    for(let i = 0; i < numberOfTransporters; i++){
         finalDataObjects.push(data[i]);
     }
 
@@ -118,11 +165,12 @@ export function getTransporterDensity(data, numberOfTransporters){
     let finalDataLabels = [];
     for(let i = 0; i < numberOfTransporters; i++){
         finalDataLabels.push(finalDataObjects[i].transporter);
-    }
+    }    
 
     const finalData = {
         "labels": finalDataLabels,
         "counts": finalDataCounts,
+        "tableData": data,
     }
     return finalData;
 }

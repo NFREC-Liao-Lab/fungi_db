@@ -47,6 +47,7 @@
 
 .title {
   margin: 0;
+  margin-bottom: 2rem;
   line-height: 1.15;
   font-size: 4rem;
 }
@@ -491,6 +492,21 @@
 }
 
 .transporterChart{
-  width: 400px;
-  height: 400px;
+  width: 30%;
+  height: 30%;
+}
+
+.transporterChart h3 {
+  margin: 0%;
+  margin-left: 1rem;
+}
+
+.transporterChartsWrapper {
+  display: flex;
+  justify-content:space-evenly;
+}
+
+#tableTitle{
+  margin-top: 0%;
+  margin-bottom: 0%;
 }

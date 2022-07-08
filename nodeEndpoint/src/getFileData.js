@@ -312,7 +312,7 @@ app.post("/retrieveSpeciesData", async (req, res) =>{
     const genomeID = genomeIDSQL[0].Genome_id;
 
     //use genomeID to get transporters and seqID
-    const proteinSeqIDQuery = "SELECT DISTINCT SeqID, Transporter_level4 FROM proteinSeqID WHERE Genome_id=?;"
+    const proteinSeqIDQuery = "SELECT DISTINCT SeqID, Transporter_id, Transporter_level4 FROM proteinSeqID WHERE Genome_id=?;"
     const proteinSeqIDSQL = await connection.query(proteinSeqIDQuery, [genomeID]);
     
     res.status(200).json({"data": proteinSeqIDSQL});
