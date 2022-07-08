@@ -492,21 +492,30 @@
 }
 
 .transporterChart{
-  width: 30%;
-  height: 30%;
+  width: 25rem;
+  height: 25rem;
 }
 
 .transporterChart h3 {
   margin: 0%;
-  margin-left: 1rem;
 }
 
 .transporterChartsWrapper {
   display: flex;
   justify-content:space-evenly;
+  flex-wrap: wrap;
+  height: min-content;
 }
 
 #tableTitle{
   margin-top: 0%;
   margin-bottom: 0%;
+}
+
+.transporterDataWrapper{
+  display: flex;
+}
+
+.transporterTableWrapper{
+  margin-right: 1rem;
 }

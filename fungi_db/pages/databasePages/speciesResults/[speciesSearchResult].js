@@ -2,17 +2,62 @@ import "chart.js/auto";
 import { Pie } from "react-chartjs-2";
 import styles from "../../../styles/Home.module.css";
 
+
 export default function speciesSearchResult(props){
+
     const numberOfTransporters = 10;
     const speciesData = props.speciesData;
-
-    //Full Taxonomy, GenomeID, Publication Link, JGI Link, Species Wikipedia Link, TaxID, 
-
+    //Full Taxonomy, GenomeID, Publication Link, JGI Link, Species Wikipedia Link, TaxID, Gene Size, 
+    const transporterDensityLevel1 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level1");
+    const transporterDensityLevel2 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level2");
+    const transporterDensityLevel3 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level3");
     const transporterDensityLevel4 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level4");
     const transporterDensityLevel5 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_id")
 
 
     //data for charts
+    const level1PieData = {
+        labels: transporterDensityLevel1.labels,
+        datasets: [{
+            label: "transporters",
+            data: transporterDensityLevel1.counts,
+            backgroundColor: [
+                'rgb(89, 41, 65)',
+                'rgb(73, 132, 103)',
+                'rgb(154, 152, 181)',
+                'rgb(181, 248, 254)',
+                'rgb(16, 255, 203)',
+            ],
+          }]
+    };
+    const level2PieData = {
+        labels: transporterDensityLevel2.labels,
+        datasets: [{
+            label: "transporters",
+            data: transporterDensityLevel2.counts,
+            backgroundColor: [
+                'rgb(89, 41, 65)',
+                'rgb(73, 132, 103)',
+                'rgb(154, 152, 181)',
+                'rgb(181, 248, 254)',
+                'rgb(16, 255, 203)',
+            ],
+          }]
+    };
+    const level3PieData = {
+        labels: transporterDensityLevel3.labels,
+        datasets: [{
+            label: "transporters",
+            data: transporterDensityLevel3.counts,
+            backgroundColor: [
+                'rgb(89, 41, 65)',
+                'rgb(73, 132, 103)',
+                'rgb(154, 152, 181)',
+                'rgb(181, 248, 254)',
+                'rgb(16, 255, 203)',
+            ],
+          }]
+    };
     const level4PieData = {
         labels: transporterDensityLevel4.labels,
         datasets: [{
@@ -42,24 +87,36 @@ export default function speciesSearchResult(props){
           }]
     };
 
-
-    
-
     return(
         <div>
             <h1 className={styles.title}>
                 {props.species}
             </h1>
-            <div className={styles.transporterChartsWrapper}>
-                <div className={styles.transporterChart}>
-                    <h3>Genus Level Transporters</h3>
-                    <Pie data={level4PieData}></Pie>
+
+            <div className={styles.transporterDataWrapper}>
+                <div className={styles.transporterChartsWrapper}>
+                    <div className={styles.transporterChart}>
+                        <h3>Level 5 Transporters</h3>
+                        <Pie data={level5PieData}></Pie>
+                    </div>
+                    <div className={styles.transporterChart}>
+                        <h3>Level 4 Transporters</h3>
+                        <Pie data={level4PieData}></Pie>
+                    </div>
+                    <div className={styles.transporterChart}>
+                        <h3>Level 3 Transporters</h3>
+                        <Pie data={level3PieData}></Pie>
+                    </div>
+                    <div className={styles.transporterChart}>
+                        <h3>Level 2 Transporters</h3>
+                        <Pie data={level2PieData}></Pie>
+                    </div>
+                    <div className={styles.transporterChart}>
+                        <h3>Level 1 Transporters</h3>
+                        <Pie data={level1PieData}></Pie>
+                    </div>
                 </div>
-                <div className={styles.transporterChart}>
-                    <h3>Species Level Transporters</h3>
-                    <Pie data={level5PieData}></Pie>
-                </div>
-                <div>
+                <div className={styles.transporterTableWrapper}>
                     <h3 id={styles.tableTitle}>Full Species Transporter Gene Data</h3>
                     <table className={styles.resultsTable}>
                         <thead>
@@ -143,13 +200,13 @@ export function getTransporterDensity(originalData, numberOfTransporters, level)
 
     //sort data by count
     data.sort((a, b) => (a.count < b.count) ? 1 : -1)
-    for(let j = 300; j < data.length; j++){
-        console.log(data[j])
-    }
-
 
     //make table data that is array of objects that have props of seqID, transporterID, and quantity
 
+    //if the number of unique transporters is less than numberOfTransporters
+    if(data.length < numberOfTransporters){
+        numberOfTransporters = data.length;
+    }
 
     let finalDataObjects = [];
     // const stopCondition = data.length-(numberOfTransporters+1);
