@@ -6,7 +6,7 @@ export default function Header() {
       <div className={ styles.header }>
         <Link href="/">
           <a className={ styles.header_element }>
-            <b>FungaBank</b>
+            <b>FungalBase</b>
           </a>
         </Link>
 
@@ -18,8 +18,8 @@ export default function Header() {
           <a className={ styles.header_element }>BLAST</a>
         </Link>
   
-        <Link href="/contactUs">
-          <a className={ styles.header_element }>Contact Us</a>
+        <Link href="/microFisher">
+          <a className={ styles.header_element }>MicroFisher</a>
         </Link>
   
         <a href="https://sunnymicrobiome.weebly.com" className={ styles.header_element }>Sunny Liao Lab</a>

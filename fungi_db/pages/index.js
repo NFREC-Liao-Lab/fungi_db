@@ -11,7 +11,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          FungaBase- A Databse for Fungi.
+          FungalBase- A Databse for Fungi.
         </h1>
 
         <p className={styles.description}>

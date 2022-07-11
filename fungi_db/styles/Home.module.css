@@ -17,10 +17,22 @@
   align-items: center;
 }
 
+#pageWrapper {
+  position: relative;
+  min-height: 100vh;
+}
+
+#contentWrapper {
+  padding-bottom: 10rem;
+}
+
 .footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   display: flex;
   flex: 1;
-  padding: 2rem 0;
+  height: 10rem;
   border-top: 1px solid #eaeaea;
   justify-content: center;
   align-items: center;
@@ -494,6 +506,7 @@
 .transporterChart{
   width: 25rem;
   height: 25rem;
+  margin-bottom: 2rem;
 }
 
 .transporterChart h3 {
@@ -519,3 +532,10 @@
 .transporterTableWrapper{
   margin-right: 1rem;
 }
+
+.transporterChartsWrapperWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
