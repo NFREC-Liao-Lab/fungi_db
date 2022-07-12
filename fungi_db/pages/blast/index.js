@@ -1,5 +1,5 @@
 import styles from "../../styles/Home.module.css"
-import BlastSearch from "../../components/BlastSearch";
+import BlastSearch from "../../components/blastSearch";
 
 export default function Blast() {
 
