@@ -34,7 +34,7 @@ export default function ResultsTable(props) {
                                     <td className={styles.resultsTable}>{dataCategory.queryCoverage}</td>
                                     <td className={styles.resultsTable}>{dataCategory.eValue}</td>
                                     <td className={styles.resultsTable}>{dataCategory.identityValue}</td>
-                                    <td className={styles.resultsTable}><a className={styles.transporterLink} href={`https://www.tcdb.org/search/result.php?tc=${supportingData[index][0].Transporter_id}`}>{supportingData[index][0].Transporter_id}</a></td>
+                                    <td className={styles.resultsTable}><a className={styles.transporterLink} href={`https://www.tcdb.org/search/result.php?tc=${supportingData[index][0].Transporter_id}`} target="_blank">{supportingData[index][0].Transporter_id}</a></td>
                                     <td className={styles.resultsTable}>{genomeInfo[index][0].Species}</td>
                                     <td className={styles.resultsTable}>{genomeInfo[index][0].primary_lifestyle}</td>
                                 </tr>
