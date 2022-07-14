@@ -19,7 +19,19 @@ export default function searchResult(props){
     const [levelToDisplayState, setLevelToDisplayState] = useState(props.levelToDisplay)
     const [rankDataState, setRankDataState] = useState(props.rankData);
 
-    const getNewData = async () => {
+    async function getNewData(clickedFilter){
+        //update search
+        let newSearch = searchState.push(clickedFilter);
+        setSearchState(newSearch);
+        //update filters, adds old tax level
+        let newFilters = filtersState.push(taxonomyLevelState);
+        setFiltersState(newFilters);
+        //update tax level
+        setTaxonomyLevelState(levelToDisplayState);
+        //update levelToDisplay
+        if(taxonomyLevelState !== "species"){
+            setLevelToDisplayState(getNextLevel(taxonomyLevel));
+        }
         const rankData = await retrieveRankData(searchState, filtersState, taxonomyLevelState, levelToDisplayState);
         setRankDataState(rankData);
     }
@@ -46,11 +58,11 @@ export default function searchResult(props){
                 <h4 className={styles.taxonomyListTitle}>Available</h4>
                 <ul className={styles.taxonomyList}>
                     {
-                        rankDataState.genomeData.map((element) => (
+                        rankDataState.genomeData.map((element, index) => (
                             <div className={styles.taxonomyListItem}>
                                 <div>
-                                    <button onClick={() => {handleClick()}}>
-                                        <li>{element[levelToDisplay]}</li>
+                                    <button onClick={() => {getNewData(element[levelToDisplayState])}}>
+                                        <li>{element[levelToDisplayState]}</li>
                                     </button>
                                 </div>
                                 {/* <TaxonomyResultsTable search={searchState} filters={filtersState} data={element} taxonomyLevel={taxonomyLevelState}/> */}
@@ -76,7 +88,8 @@ export async function getServerSideProps(context){
         if(taxonomyLevel !== "species"){
             levelToDisplay = getNextLevel(taxonomyLevel);
         }
-        rankData = await retrieveRankData(search, filters, taxonomyLevel, levelToDisplay);
+        console.log("levelToDisplay: ", levelToDisplay);
+        const rankData = await retrieveRankData(search, filters, taxonomyLevel, levelToDisplay);
 
         return{
             props: {
@@ -136,7 +149,6 @@ export function pluralizeTaxonomyLevel(level){
 }
 
 export async function retrieveRankData(search, filters, taxonomyLevel, levelToDisplay){
-
     const retrieveRankDataOptions = {
         method: 'POST',
         headers: {

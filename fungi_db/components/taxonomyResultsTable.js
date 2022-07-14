@@ -50,7 +50,7 @@ export default function TaxonomyResultsTable(props){
     
     return(
         <div>
-            <button onClick={}>
+            <button>
                 <li>{element[levelToDisplay]}</li>
             </button>
         </div>

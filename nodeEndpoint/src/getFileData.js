@@ -239,6 +239,7 @@ app.post("/retrieveTaxonomySearchData", async (req, res) => {
         let taxonomyLevel = req.body.taxonomyLevel;
         let levelToDisplay = req.body.levelToDisplay;
         let filters = req.body.filters;
+        console.log("level is: ", levelToDisplay);
 
         if(filters.includes("order")){
             const index = filters.indexOf("order");
@@ -323,7 +324,7 @@ app.post("/retrieveSpeciesData", async (req, res) =>{
 })
 
 
-function checkForOrderColumn(genomeData){
+function checkForOrderColumn(genomeData ,levelToDisplay){
     keys = Object.keys(genomeData[0]);
     console.log("keys are", keys);
     if(keys[0] === "orderColumn"){
