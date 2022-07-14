@@ -13,7 +13,7 @@ export default function speciesSearchResult(props){
 
     const numberOfTransporters = 10;
     const speciesData = props.speciesData;
-    //Full Taxonomy, GenomeID, Publication Link, JGI Link, Species Wikipedia Link, TaxID, Gene Size, 
+    //Full Taxonomy, GenomeID, Publication Link, JGI Link, Species Wikipedia Link; TaxID, Gene Size, 
     const transporterDensityLevel1 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level1");
     const transporterDensityLevel2 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level2");
     const transporterDensityLevel3 = getTransporterDensity(speciesData, numberOfTransporters, "Transporter_level3");
