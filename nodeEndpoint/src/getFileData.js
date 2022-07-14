@@ -274,7 +274,7 @@ app.post("/retrieveTaxonomySearchData", async (req, res) => {
         console.log("genomeData is: ", genomeData);
 
         //if it is orderColumn change it to order
-        genomeData = checkForOrderColumn(genomeData);
+        genomeData = checkForOrderColumn(genomeData, levelToDisplay);
         console.log("genomeData after is: ", genomeData);
 
         const data = {
@@ -331,9 +331,24 @@ function checkForOrderColumn(genomeData){
             genomeData[i]["order"] = genomeData[i]["orderColumn"];
             delete genomeData[i]["orderColumn"];
         }
+        genomeData = removeNulls(genomeData, levelToDisplay);
         return genomeData;
     }
     else{
+        genomeData = removeNulls(genomeData, levelToDisplay);
         return genomeData;
     }
+}
+
+function removeNulls(genomeData, levelToDisplay){
+    console.log("genome Data is: ", genomeData);
+    //loop through arr, if null remove
+    for(let i = 0; i < genomeData.length; i++){
+        if(!genomeData[i][levelToDisplay]){
+            genomeData.splice(i, 1);
+        }
+    }
+
+    return genomeData;
+
 }

@@ -3,8 +3,13 @@ import Link from "next/link";
 
 
 export default function TaxonomyResultsTable(props){
+    //get levelToDisplay
+    let levelToDisplay;
+    if(props.taxonomyLevel !== "species"){
+        levelToDisplay = getNextLevel(props.taxonomyLevel);
+    }
+
     const element = props.data;
-    const levelToDisplay = props.levelToDisplay;
     let nextLevelPath;
     let filters = props.filters;
     let filtersJSON = JSON.stringify(props.filters);
@@ -22,6 +27,7 @@ export default function TaxonomyResultsTable(props){
     let searchJSON = JSON.stringify(search);
 
 
+    //if you're on genus level, make path to species page
     if(levelToDisplay === "species"){
         nextLevelPath = {
             pathname: `/databasePages/speciesResults/${element[levelToDisplay]}`,
@@ -44,9 +50,9 @@ export default function TaxonomyResultsTable(props){
     
     return(
         <div>
-            <Link href={nextLevelPath}>
+            <button onClick={}>
                 <li>{element[levelToDisplay]}</li>
-            </Link>
+            </button>
         </div>
     );
 }

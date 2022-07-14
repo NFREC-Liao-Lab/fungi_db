@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import TaxonomyResultsTable from "../../../components/taxonomyResultsTable";
 import styles from "../../../styles/Home.module.css";
-
+import { useState } from "react";
 
 //Display all the organisms in our database one taxonomic level below the search
 //Clicking on an organism displays everything in one taxonomic level below that and so on until species
@@ -12,32 +12,48 @@ export default function searchResult(props){
         router.push("/searchError");
     }
 
-    const data = props.data;
-    const filters = props.filters;
-    const levelToDisplay = props.levelToDisplay;
-    const taxonomyLevel = props.taxonomyLevel;
-    const capitalizedTaxonomyLevel = capitalizeFirstLetter(taxonomyLevel);
-    const capitalizedLevelToDisplay = capitalizeFirstLetter(levelToDisplay);
-    const genomeData = removeNulls(data.genomeData, levelToDisplay);
-    const pluralizedTaxonomyLevelToDisplay = pluralizeTaxonomyLevel(capitalizedLevelToDisplay);
-    const search = props.search;
+    //set these on click of option on page and call getNewData
+    const [searchState, setSearchState] = useState(props.search);
+    const [filtersState, setFiltersState] = useState(props.filters);
+    const [taxonomyLevelState, setTaxonomyLevelState] = useState(props.taxonomyLevel);
+    const [levelToDisplayState, setLevelToDisplayState] = useState(props.levelToDisplay)
+    const [rankDataState, setRankDataState] = useState(props.rankData);
+
+    const getNewData = async () => {
+        const rankData = await retrieveRankData(searchState, filtersState, taxonomyLevelState, levelToDisplayState);
+        setRankDataState(rankData);
+    }
+    // const data = props.data;
+    // const filters = props.filters;
+    // const levelToDisplay = props.levelToDisplay;
+    // const taxonomyLevel = props.taxonomyLevel;
+    // const capitalizedTaxonomyLevel = capitalizeFirstLetter(taxonomyLevel);
+    // const capitalizedLevelToDisplay = capitalizeFirstLetter(levelToDisplay);
+    // const genomeData = removeNulls(data.genomeData, levelToDisplay);
+    // const pluralizedTaxonomyLevelToDisplay = pluralizeTaxonomyLevel(capitalizedLevelToDisplay);
+    // const search = props.search;
     return(
         <div>
             <h1 className={styles.title}>Select the Next Taxonomic Rank</h1>
             <div className={styles.taxonomyRunningName}>
             {
-                    search.map((element, index) =>(
-                        <p>{filters[index]}: {element},&nbsp;</p>
+                    searchState.map((element, index) =>(
+                        <p>{filtersState[index]}: {element},&nbsp;</p>
                     ))
             }
             </div>
             <div className={styles.taxonomyListWrapper}>
-                <h4 className={styles.taxonomyListTitle}>{pluralizedTaxonomyLevelToDisplay} Available</h4>
+                <h4 className={styles.taxonomyListTitle}>Available</h4>
                 <ul className={styles.taxonomyList}>
                     {
-                        genomeData.map((element) => (
+                        rankDataState.genomeData.map((element) => (
                             <div className={styles.taxonomyListItem}>
-                                <TaxonomyResultsTable search={props.search} filters={filters} data={element} levelToDisplay={levelToDisplay}/>
+                                <div>
+                                    <button onClick={() => {handleClick()}}>
+                                        <li>{element[levelToDisplay]}</li>
+                                    </button>
+                                </div>
+                                {/* <TaxonomyResultsTable search={searchState} filters={filtersState} data={element} taxonomyLevel={taxonomyLevelState}/> */}
                             </div>
                         ))
                     }
@@ -56,38 +72,19 @@ export async function getServerSideProps(context){
         console.log("tax level: ", taxonomyLevel);
 
         filters.push(taxonomyLevel);
-
         let levelToDisplay;
         if(taxonomyLevel !== "species"){
             levelToDisplay = getNextLevel(taxonomyLevel);
         }
-        else{
-
-        }
-
-        const retrieveSpeciesDataOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "search": search,
-                "taxonomyLevel": taxonomyLevel,
-                "levelToDisplay": levelToDisplay,
-                "filters": filters,
-            }),
-        }
-        //post query to back end
-        const res = await fetch("http://localhost:4000/retrieveTaxonomySearchData", retrieveSpeciesDataOptions);
-        const searchData = await res.json();
+        rankData = await retrieveRankData(search, filters, taxonomyLevel, levelToDisplay);
 
         return{
             props: {
-                "data": searchData.data,
+                "rankData": rankData.data,
                 "search": search,
-                "levelToDisplay": levelToDisplay,
                 "taxonomyLevel": taxonomyLevel,
                 "filters": filters,
+                "levelToDisplay": levelToDisplay,
             }
         }
     }
@@ -138,15 +135,23 @@ export function pluralizeTaxonomyLevel(level){
     return pluralLevel;
 }
 
-export function removeNulls(genomeData, levelToDisplay){
-    console.log("genome Data is: ", genomeData);
-    //loop through arr, if null remove
-    for(let i = 0; i < genomeData.length; i++){
-        if(!genomeData[i][levelToDisplay]){
-            genomeData.splice(i, 1);
-        }
+export async function retrieveRankData(search, filters, taxonomyLevel, levelToDisplay){
+
+    const retrieveRankDataOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "search": search,
+            "taxonomyLevel": taxonomyLevel,
+            "levelToDisplay": levelToDisplay,
+            "filters": filters,
+        }),
     }
+    //post query to back end
+    const res = await fetch("http://localhost:4000/retrieveTaxonomySearchData", retrieveRankDataOptions);
+    const searchData = await res.json();
 
-    return genomeData;
-
+    return searchData;
 }
