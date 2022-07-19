@@ -6,8 +6,9 @@ export default async function handler(req, res){
     let start, tempi = 0;
     let filesIndex = 0;
     let status = false;
+    const pathToSearch = "/Users/simoncole/fungiDB/fungi_db/"
     //get one more than number of sequences incase there is .next
-    let fileNames = shelljs.exec(`cd /Users/simoncole/fungiDB/fungi_db/ ; ls -Art | tail -n ${++tempNumberOfSequences}`);
+    let fileNames = shelljs.exec(`cd ${pathToSearch} ; ls -Art | tail -n ${++tempNumberOfSequences}`);
     console.log("filenames: ", fileNames);
     for(let i = 0; i < fileNames.length; i++){
         if(fileNames.charAt(i) === "\n"){

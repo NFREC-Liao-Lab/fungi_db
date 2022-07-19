@@ -73,10 +73,10 @@ let data = [];
 let numberOfSequences;
 
 app.get("/", (req, res) => {
-
+    const resultsFilePath = "/Users/simoncole/fungidb/fungi_db/";
     if(fileNames[0]){
         for(let i = 0; i < numberOfSequences; i++){
-            let rawData = fs.readFileSync(`/Users/simoncole/fungidb/fungi_db/${fileNames[i]}`);
+            let rawData = fs.readFileSync(`${resultsFilePath}${fileNames[i]}`);
             data[i] = JSON.parse(rawData);
         }
         res.send({"data": data});

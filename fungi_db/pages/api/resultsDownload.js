@@ -44,8 +44,9 @@ export default async function handler(req, res){
         }
     }
 
+    csvWriterPath = "/Users/simoncole/fungiDB/fungi_db/public/";
     const csvWriter = createCsvWriter({
-        path: `/Users/simoncole/fungiDB/fungi_db/public/${filename}`,
+        path: `${csvWriterPath}${filename}`,
         header: [
             {id: "query", title: "QUERY"},
             {id: "sequenceID", title: "SEQUENCE_ID"},

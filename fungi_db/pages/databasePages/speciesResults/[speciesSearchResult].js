@@ -1,6 +1,6 @@
-import "chart.js/auto";
 import { useState } from "react";
 import { Pie } from "react-chartjs-2";
+import "chart.js/auto";
 import TransporterTable from "../../../components/transporterTable";
 import styles from "../../../styles/Home.module.css";
 

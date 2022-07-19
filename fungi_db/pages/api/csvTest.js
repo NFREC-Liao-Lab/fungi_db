@@ -1,8 +1,9 @@
 
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const csvWriterPath = "/Users/simoncole/fungiDB/fungi_db/test.csv";
 
 const csvWriter = createCsvWriter({
-    path: "/Users/simoncole/fungiDB/fungi_db/test.csv",
+    path: csvWriterPath,
     header: [
         {id: "query", title: "QUERY"},
         {id: "sequenceID", title: "SEQUENCE_ID"},
