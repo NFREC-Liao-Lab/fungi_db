@@ -73,7 +73,7 @@ let data = [];
 let numberOfSequences;
 
 app.get("/", (req, res) => {
-    const resultsFilePath = "/Users/simoncole/fungidb/fungi_db/";
+    const resultsFilePath = "/home/ubuntu/fungi_db/fungi_db/";
     if(fileNames[0]){
         for(let i = 0; i < numberOfSequences; i++){
             let rawData = fs.readFileSync(`${resultsFilePath}${fileNames[i]}`);
@@ -98,7 +98,7 @@ app.post("/makeJSONFile", (req, res) => {
     const fileName = req.body.fileName;
     console.log("data is: ", fileName);
     const stringData = JSON.stringify(data);
-    const path = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
+    const path = `/home/ubuntu/fungi_db/fungi_db/public/${fileName}`;
     fs.writeFile(path, stringData, (err) => {
         if(err){
             console.log(`there was an error in writing the ${fileName} file`);
@@ -109,7 +109,7 @@ app.post("/makeJSONFile", (req, res) => {
 
 app.post("/deleteCSVDownload", (req, res) => {
     const fileName = req.body.fileName;
-    const filePath = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
+    const filePath = `/home/ubuntu/fungi_db/fungi_db/public/${fileName}`;
     try{
         if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
             console.log("the file name given is: ", fileName);
@@ -136,7 +136,7 @@ app.post("/deleteCSVDownload", (req, res) => {
 
 app.post("/deleteJSONDownload", (req, res) => {
     const fileName = req.body.fileName;
-    const filePath = `/Users/simoncole/fungiDB/fungi_db/public/${fileName}`;
+    const filePath = `/home/ubuntu/fungi_db/fungi_db/public/${fileName}`;
     console.log("the file name given is: ", fileName);
     try{
         if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
@@ -168,7 +168,7 @@ app.post("/deleteSSResults", (req, res) =>{
         for(let i = 0; i < fileNames.length; i++){
             const fileName = fileNames[i];
             if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
-                const filePath = "/Users/simoncole/fungiDB/fungi_db/" + fileName;
+                const filePath = "/home/ubuntu/fungi_db/fungi_db/" + fileName;
                 fs.unlink(filePath, (err) => {
                     if(err){
                         throw err;

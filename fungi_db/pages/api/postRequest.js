@@ -6,7 +6,7 @@ export default async function handler(req, res){
     }
     let queries = [];
     console.log("length is: ", req.body.sequences.length);
-    const shellScriptPath = "/Users/simoncole/fungiDB/db/blastnAllDbs.sh";
+    const shellScriptPath = "/home/ubuntu/fungi_db/db/blastnAllDbs.sh";
     for(let i = 0; i < req.body.sequences.length; i++){
         queries[i] = req.body.sequences[i];
         shelljs.exec(`${shellScriptPath} ${queries[i]}`);
