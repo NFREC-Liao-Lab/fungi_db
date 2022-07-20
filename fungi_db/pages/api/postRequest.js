@@ -9,6 +9,7 @@ export default async function handler(req, res){
     const shellScriptPath = "/home/ubuntu/fungi_db/db/blastnAllDbs.sh";
     for(let i = 0; i < req.body.sequences.length; i++){
         queries[i] = req.body.sequences[i];
+        console.log(`what's being executed ${shellScriptPath} ${queries[i]}`);
         shelljs.exec(`${shellScriptPath} ${queries[i]}`);
     }
     res.status(200).json({});
