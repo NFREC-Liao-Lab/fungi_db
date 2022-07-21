@@ -6,7 +6,7 @@ export default async function handler(req, res){
     let start, tempi = 0;
     let filesIndex = 0;
     let status = false;
-    const pathToSearch = "/home/ubuntu/fungi_db/fungi_db/"
+    const pathToSearch = `${process.env.defaultPath}fungi_db/`;
     //get one more than number of sequences incase there is .next
     let fileNames = shelljs.exec(`cd ${pathToSearch} ; ls -Art | tail -n ${++tempNumberOfSequences}`);
     console.log("filenames: ", fileNames);

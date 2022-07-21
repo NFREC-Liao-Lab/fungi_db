@@ -44,7 +44,7 @@ export default async function handler(req, res){
         }
     }
 
-    csvWriterPath = "/home/ubuntu/fungi_db/fungi_db/public/";
+    csvWriterPath = `${process.env.defaultPath}fungi_db/public/`;
     const csvWriter = createCsvWriter({
         path: `${csvWriterPath}${filename}`,
         header: [
