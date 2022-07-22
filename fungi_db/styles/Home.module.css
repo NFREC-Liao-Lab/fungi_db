@@ -168,7 +168,6 @@
 
 }
 
-
 .resultsTable{
   border: 2px solid;
   border-collapse: collapse;
@@ -536,3 +535,61 @@
   align-items: center;
 }
 
+.carouselContainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: #0070f3;
+}
+
+.carouselCard{
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  width: 24rem;
+  height: 24rem;
+  padding: 0.5rem;
+  margin: 1rem;
+  border-radius: 2rem;
+  background-color: aliceblue;
+  border: black;
+  border-style: solid;
+  box-shadow: 30px, 30px, black;
+  transition-duration: 0.8s;
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+}
+.carouselCard:hover{
+  box-shadow: 10px 10px 10px black;
+  transition-duration: 0.8s;
+}
+
+.carouselList{
+  list-style: none;
+  padding-left: 0;
+  font-size:large;
+}
+
+.carouselListItem{
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
+
+}
+
+.carouselCardKey{
+  display: inline;
+  font-weight: bold;
+}
+.carouselCardValue{
+  display: inline;
+}
+
+.carouselCardTitle{
+  font-weight: bold;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: large;
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+}

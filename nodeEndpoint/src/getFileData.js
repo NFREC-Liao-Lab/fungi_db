@@ -306,13 +306,13 @@ app.get("/getPhylums", async (req, res) => {
 app.post("/retrieveSpeciesData", async (req, res) =>{
     const species = req.body.species[0];
 
-    //get genomeID from genomesInfo 
-    const getGenomeIDQuery = "SELECT Genome_id FROM genomesInfo WHERE Species=?;";
+    //get genomeID, taxonomy and speciesData from genomesInfo 
+    const getGenomeIDQuery = "SELECT Genome_id, phylum, class, orderColumn, family, JGI_link, Assembly_Length, Gene_number, Publish_link, TaxID, primary_lifestyle, Secondary_lifestyle, Comment_on_lifestyle_template, Endophytic_interaction_capability_template, Plant_pathogenic_capacity_template, Decay_substrate_template, Decay_type_template, Aquatic_habitat_template, Animal_biotrophic_capacity_template, Specific_hosts, Growth_form_template, Fruitbody_type_template, Hymenium_type_template, Ectomycorrhiza_exploration_type_template, Ectomycorrhiza_lineage_template, primary_photobiont, secondary_photobiont FROM genomesInfo WHERE Species=?;";
     const genomeIDSQL = await connection.query(getGenomeIDQuery, [species]);
     const genomeID = genomeIDSQL[0].Genome_id;
 
     //use genomeID to get transporters and seqID
-    const proteinSeqIDQuery = "SELECT DISTINCT SeqID, Transporter_id, Transporter_level4, Transporter_level5, Transporter_level3, Transporter_level2, Transporter_level1 FROM proteinSeqID WHERE Genome_id=?;"
+    const proteinSeqIDQuery = "SELECT DISTINCT SeqID, Transporter_id, Transporter_level4, Transporter_level5, Transporter_level3, Transporter_level2, Transporter_level1, prot_id, Gene_id FROM proteinSeqID WHERE Genome_id=?;"
     const proteinSeqIDSQL = await connection.query(proteinSeqIDQuery, [genomeID]);
 
     //make transporter level 1 string instead of int
@@ -320,7 +320,10 @@ app.post("/retrieveSpeciesData", async (req, res) =>{
         proteinSeqIDSQL[i].Transporter_level1 = proteinSeqIDSQL[i].Transporter_level1.toString()
     }
     
-    res.status(200).json({"data": proteinSeqIDSQL});
+    res.status(200).json({
+        "data": proteinSeqIDSQL,
+        "speciesData": genomeIDSQL,
+    });
 })
 
 
