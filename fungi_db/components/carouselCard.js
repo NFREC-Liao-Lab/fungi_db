@@ -3,6 +3,10 @@ import { useState } from "react";
 
 export default function CarouselCard(props){
     const data = props.data;
+    if(props.binomialNomenclature){
+        data["Genus"] = props.binomialNomenclature.Genus;
+        data["Species"] = props.binomialNomenclature.Species;
+    }
     let objKeys = Object.keys(data);
     const title = data["Title"];
     const titleIndex = objKeys.indexOf("Title");
@@ -29,11 +33,11 @@ export default function CarouselCard(props){
                     <div>
                         <li className={styles.carouselListItem} key="JGI">
                             <div className={styles.carouselCardKey}>JGI Link- </div>
-                            <div className={styles.carouselCardValue}><a href={JGILink}>Click Here</a></div>
+                            <div className={styles.carouselCardValue}><a target="_blank" href={JGILink}>Click Here</a></div>
                         </li>
                         <li>
                             <div className={styles.carouselCardKey}>Publication Link- </div>
-                            <div className={styles.carouselCardValue}><a href={publicationLink}>Click Here</a></div>
+                            <div className={styles.carouselCardValue}><a target="_blank" href={publicationLink}>Click Here</a></div>
                         </li>
                     </div>
                 }

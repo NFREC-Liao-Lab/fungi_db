@@ -529,6 +529,13 @@
   margin-right: 1rem;
 }
 
+.transporterTable{
+  height: 75rem;
+  overflow-y: scroll;
+  border-bottom-style: solid;
+  border-top-style: solid;
+}
+
 .transporterChartsWrapperWrapper {
   display: flex;
   flex-direction: column;
@@ -540,6 +547,8 @@
   align-items: center;
   justify-content: space-around;
   background-color: #0070f3;
+  width: 100%;
+  overflow: scroll;
 }
 
 .carouselCard{
@@ -557,6 +566,7 @@
   display: flex;
   align-items: left;
   flex-direction: column;
+  overflow: scroll;
 }
 .carouselCard:hover{
   box-shadow: 10px 10px 10px black;
@@ -593,3 +603,4 @@
   display: flex;
   justify-content: center;
 }
+

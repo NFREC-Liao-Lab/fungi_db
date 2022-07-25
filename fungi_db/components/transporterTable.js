@@ -1,7 +1,7 @@
 import styles from "../styles/Home.module.css";
 
 export default function TransporterTable(props){
-    const transporterDensity = props.transporterDensity
+    const transporterDensity = props.transporterDensity;
     return(
             <table className={styles.resultsTable}>
                 <thead>

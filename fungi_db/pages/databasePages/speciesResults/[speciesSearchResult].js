@@ -54,13 +54,14 @@ export default function speciesSearchResult(props){
     let speciesData = props.speciesData;
     speciesData = removeNulls(speciesData[0]);
     const carouselData = makeCarouselData(speciesData);
+    const binomialNomenclature = makeBinomialNomenclature(props.species);
     return(
         <div>
             <h1 className={styles.title}>
                 {props.species}
             </h1>
                 <div className={styles.carouselContainer}>
-                    <CarouselCard data={carouselData.taxonomyInfo}/>
+                    <CarouselCard data={carouselData.taxonomyInfo} binomialNomenclature={binomialNomenclature}/>
                     <CarouselCard data={carouselData.speciesInfo}/>
                     <CarouselCard data={carouselData.genomicInfo}/>
                 </div>
@@ -103,7 +104,9 @@ export default function speciesSearchResult(props){
                         <option value="level1">Transporter Level 1</option>
                     </select>
                     <h3 id={styles.tableTitle}>Full Species Transporter Gene Data</h3>
-                    <TransporterTable transporterDensity={tableLevelState.selected}></TransporterTable>
+                    <div className={styles.transporterTable}>
+                        <TransporterTable transporterDensity={tableLevelState.selected}></TransporterTable>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,7 +142,6 @@ export async function getServerSideProps(context){
 export function getTransporterDensity(originalData, numberOfTransporters, level){
     //Array of objects where each object has transporter value and number there are
     
-    console.log(originalData[0][level]);
     //get array of transporters
     let transporters = [];
     originalData.map((element, index) => {
@@ -330,6 +332,17 @@ export function cleanData(data){
     //replace underscores with spaces
     //check values
     for(let key in data){
+        if(key === "OrderColumn"){
+            data["Order"] = data[key];
+            delete data[key];
+            key = "Order";
+        }
+        else if(key === "TaxID"){
+            data["Taxonomy ID"] = data[key];
+            delete data[key];
+            key = "Taxonomy ID";
+        }
+
         if(typeof(data[key]) === "string"){
            newData[key] = data[key].replace(/_/g, " ");
         }
@@ -402,4 +415,16 @@ function capitalizeKeys(capitalKeys){
         }
     }
     return capitalKeys;
+}
+
+function makeBinomialNomenclature(binomialNomenclature){
+    const spaceIndex = binomialNomenclature[0].indexOf(" ");
+    const Genus = binomialNomenclature[0].slice(0, spaceIndex);
+    const Species = binomialNomenclature[0].slice(spaceIndex+1, binomialNomenclature[0].length);
+
+    return {
+        Genus: Genus,
+        Species: Species
+    }
+
 }
