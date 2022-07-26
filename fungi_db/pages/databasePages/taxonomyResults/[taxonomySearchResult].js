@@ -71,10 +71,10 @@ export async function getServerSideProps(context){
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "search": search,
+                "search": search[search.length-1],
                 "taxonomyLevel": taxonomyLevel,
                 "levelToDisplay": levelToDisplay,
-                "filters": filters,
+                "filters": filters[filters.length-1],
             }),
         }
         //post query to back end

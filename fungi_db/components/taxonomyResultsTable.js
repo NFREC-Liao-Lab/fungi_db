@@ -22,11 +22,14 @@ export default function TaxonomyResultsTable(props){
     let searchJSON = JSON.stringify(search);
 
 
-    if(levelToDisplay === "species"){
+    if(levelToDisplay === "genus"){
         nextLevelPath = {
-            pathname: `/databasePages/speciesResults/${element[levelToDisplay]}`,
+            pathname: `/databasePages/genusResults/${element[levelToDisplay]}`,
             query: {
-                "species": JSON.stringify([element[levelToDisplay]]),
+                "taxonomyLevel": levelToDisplay,
+                "filters": filtersJSON,
+                "search": searchJSON,
+                // "species": JSON.stringify([element[levelToDisplay]]),
             }
         }
     }
@@ -34,7 +37,6 @@ export default function TaxonomyResultsTable(props){
             nextLevelPath = {
             pathname: `/databasePages/taxonomyResults/${element[levelToDisplay]}`,
             query: {
-                "search": element[levelToDisplay],
                 "taxonomyLevel": levelToDisplay,
                 "filters": filtersJSON,
                 "search": searchJSON,

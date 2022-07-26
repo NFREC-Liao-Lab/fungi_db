@@ -14,14 +14,17 @@ app.listen(4000, () => {
 });
 
 const numberOfResults = 10;
-
 var mysql = require('mysql');
 const util = require('util');
+const sqlHost = process.env.SQLHOST;
+const sqlUser = process.env.SQLUSER;
+const sqlPassword = process.env.SQLPASSWORD;
+const sqlDatabase = process.env.SQLDATABASE;
 var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '79037197',
-  database : 'fungidb'
+  host     : sqlHost,
+  user     : sqlUser,
+  password : sqlPassword,
+  database : sqlDatabase
 });
 connection.query = util.promisify(connection.query).bind(connection);
 
@@ -253,24 +256,13 @@ app.post("/retrieveTaxonomySearchData", async (req, res) => {
             levelToDisplay = "orderColumn"
         }
 
-        let speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE "
-
-        //loop through filters and create WHERE portion of query
-        for(let i = 0; i < filters.length; i++){
-            //if not the last filter
-            if(i !== filters.length-1){
-                speciesGenomeSQLQueryWhere += filters[i] + "=? && "
-            }
-            else{
-                speciesGenomeSQLQueryWhere += filters[i] + "=?;"
-            }
-        }
+        let speciesGenomeSQLQueryWhere = " FROM genomesInfo WHERE " + filters + "=?;";
 
         console.log(speciesGenomeSQLQueryWhere);
 
         const speciesGenomeSQLQuery = "SELECT DISTINCT " + levelToDisplay + speciesGenomeSQLQueryWhere;
         console.log(speciesGenomeSQLQuery);
-        console.log(search);
+        console.log(search[search.length-1]);
         let genomeData = await connection.query(speciesGenomeSQLQuery, search);
         console.log("genomeData is: ", genomeData);
 
