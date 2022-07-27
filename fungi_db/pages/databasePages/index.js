@@ -16,21 +16,29 @@ export default function directSearch(props){
         const search = JSON.stringify([event.target[0].value]);
         const filters = JSON.stringify([]);
 
-        if(taxonomyLevelState !== "binomialNomenclature"){
+        if(taxonomyLevelState === "genus"){
+            router.push({
+                pathname: `/databasePages/genusResults/${search}`,
+                query: {
+                    "search": search,
+                }
+            })
+        }
+        else if(taxonomyLevelState === "binomialNomenclature"){
+            router.push({
+                pathname:  `/databasePages/speciesResults/${search}`,
+                query: {
+                    "species": search,
+                }
+            })
+        }
+        else{
             router.push({
                 pathname: `/databasePages/taxonomyResults/${search}`,
                 query: {
                     "search": search,
                     "taxonomyLevel": taxonomyLevelState,
                     "filters": filters,
-                }
-            })
-        }
-        else{
-            router.push({
-                pathname:  `/databasePages/speciesResults/${search}`,
-                query: {
-                    "species": search,
                 }
             })
         }

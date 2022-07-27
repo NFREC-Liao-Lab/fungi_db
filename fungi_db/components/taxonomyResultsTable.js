@@ -11,6 +11,7 @@ export default function TaxonomyResultsTable(props){
     let search = props.search;
     let numberOfFilters = filters.length;
     console.log("element is: ", element);
+    //search is array of the previous choices
     //reset search to only jave the previous searches, not results
     let newSearch = [];
     for(let i = 0; i < numberOfFilters; i++){
@@ -18,7 +19,6 @@ export default function TaxonomyResultsTable(props){
     }
     search = newSearch;
     search.push(element[levelToDisplay]);
-    console.log("search after is: ", search);
     let searchJSON = JSON.stringify(search);
 
 
@@ -33,6 +33,14 @@ export default function TaxonomyResultsTable(props){
             }
         }
     }
+    else if(levelToDisplay === "species"){
+        nextLevelPath = {
+            pathname: `/databasePages/speciesResults/${element[levelToDisplay]}`,
+            query: {
+                species: JSON.stringify(element[levelToDisplay]),
+            }
+        }
+    }
     else{
             nextLevelPath = {
             pathname: `/databasePages/taxonomyResults/${element[levelToDisplay]}`,
@@ -44,6 +52,7 @@ export default function TaxonomyResultsTable(props){
         }
     }
     
+    console.log("path", nextLevelPath.pathname);
     return(
         <div>
             <Link href={nextLevelPath}>

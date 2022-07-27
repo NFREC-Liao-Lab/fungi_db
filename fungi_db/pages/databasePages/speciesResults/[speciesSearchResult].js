@@ -115,7 +115,6 @@ export default function speciesSearchResult(props){
 
 export async function getServerSideProps(context){
     const species = JSON.parse(context.query.species);
-
     const speciesDataOptions = {
         method: 'POST',
         headers: {
@@ -418,10 +417,9 @@ function capitalizeKeys(capitalKeys){
 }
 
 function makeBinomialNomenclature(binomialNomenclature){
-    const spaceIndex = binomialNomenclature[0].indexOf(" ");
-    const Genus = binomialNomenclature[0].slice(0, spaceIndex);
-    const Species = binomialNomenclature[0].slice(spaceIndex+1, binomialNomenclature[0].length);
-
+    const spaceIndex = binomialNomenclature.indexOf(" ");
+    const Genus = binomialNomenclature.slice(0, spaceIndex);
+    const Species = binomialNomenclature.slice(spaceIndex+1, binomialNomenclature.length);
     return {
         Genus: Genus,
         Species: Species

@@ -244,15 +244,14 @@ app.post("/retrieveTaxonomySearchData", async (req, res) => {
         let levelToDisplay = req.body.levelToDisplay;
         let filters = req.body.filters;
 
-        if(filters.includes("order")){
-            const index = filters.indexOf("order");
-            filters[index] = "orderColumn";
+        if(filters === "order"){
+            filters = "ordercolumn";
         }
         console.log("filters are: ", filters);
-        if(taxonomyLevel == "order"){
+        if(taxonomyLevel === "order"){
             taxonomyLevel = "orderColumn";
         }
-        else if(levelToDisplay == "order"){
+        else if(levelToDisplay === "order"){
             levelToDisplay = "orderColumn"
         }
 
@@ -296,7 +295,7 @@ app.get("/getPhylums", async (req, res) => {
 })
 
 app.post("/retrieveSpeciesData", async (req, res) =>{
-    const species = req.body.species[0];
+    const species = req.body.species;
 
     //get genomeID, taxonomy and speciesData from genomesInfo 
     const getGenomeIDQuery = "SELECT Genome_id, phylum, class, orderColumn, family, JGI_link, Assembly_Length, Gene_number, Publish_link, TaxID, primary_lifestyle, Secondary_lifestyle, Comment_on_lifestyle_template, Endophytic_interaction_capability_template, Plant_pathogenic_capacity_template, Decay_substrate_template, Decay_type_template, Aquatic_habitat_template, Animal_biotrophic_capacity_template, Specific_hosts, Growth_form_template, Fruitbody_type_template, Hymenium_type_template, Ectomycorrhiza_exploration_type_template, Ectomycorrhiza_lineage_template, primary_photobiont, secondary_photobiont FROM genomesInfo WHERE Species=?;";
@@ -333,3 +332,34 @@ function checkForOrderColumn(genomeData){
         return genomeData;
     }
 }
+
+app.post("/retrieveGenusData", async (req, res) => {
+    const genus = req.body.genus;
+
+    //get Genome IDs
+    const genomeIDQuery = "SELECT Genome_id, species FROM genomesInfo WHERE genus=?";
+    const genomeIDs = await connection.query(genomeIDQuery, [genus]);
+    let genomeIDArray = [];
+    for(let i = 0; i < genomeIDs.length; i++){
+        genomeIDArray.push(genomeIDs[i].Genome_id);
+    }
+    //Use genome IDs to get transporters... a lot of data
+    let transporterQuery = "SELECT Transporter_id, Genome_id FROM proteinSeqID WHERE Genome_id=?";
+    for(let i = 1; i < genomeIDs.length; i++){
+        transporterQuery += " OR Genome_id=?"
+    }
+    transporterQuery += ";"
+    let transporterData = await connection.query(transporterQuery, genomeIDArray)
+    //add species to
+    for(let i = 0; i < transporterData.length; i++){
+        for(let j = 0; j < genomeIDs.length; j++){
+            // console.log(`${transporterData[i].Genome_id}`)
+            if(genomeIDs[j].Genome_id === transporterData[i].Genome_id){
+                transporterData[i]["species"] = genomeIDs[j].species;
+                delete transporterData[i]["Genome_id"];
+            }
+        }
+    }
+    console.log(transporterData[1000]);
+    res.status(200).json({data: transporterData});
+});
