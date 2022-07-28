@@ -1,6 +1,6 @@
 
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-const csvWriterPath = `${process.env.defaultPath}fungi_db/test.csv`;
+const csvWriterPath = `${process.env.defaultPath}frontend/test.csv`;
 
 const csvWriter = createCsvWriter({
     path: csvWriterPath,

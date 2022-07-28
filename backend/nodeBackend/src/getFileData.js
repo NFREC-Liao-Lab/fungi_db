@@ -77,7 +77,7 @@ let data = [];
 let numberOfSequences;
 
 app.get("/", (req, res) => {
-    const resultsFilePath = `${process.env.DEFAULT_PATH}fungi_db/`;
+    const resultsFilePath = `${process.env.DEFAULT_PATH}frontend/`;
     if(fileNames[0]){
         for(let i = 0; i < numberOfSequences; i++){
             let rawData = fs.readFileSync(`${resultsFilePath}${fileNames[i]}`);
@@ -102,7 +102,7 @@ app.post("/makeJSONFile", (req, res) => {
     const fileName = req.body.fileName;
     console.log("data is: ", fileName);
     const stringData = JSON.stringify(data);
-    const path = `${process.env.DEFAULT_PATH}fungi_db/public/${fileName}`;
+    const path = `${process.env.DEFAULT_PATH}frontend/public/${fileName}`;
     fs.writeFile(path, stringData, (err) => {
         if(err){
             console.log(`there was an error in writing the ${fileName} file`);
@@ -113,7 +113,7 @@ app.post("/makeJSONFile", (req, res) => {
 
 app.post("/deleteCSVDownload", (req, res) => {
     const fileName = req.body.fileName;
-    const filePath = `${process.env.DEFAULT_PATH}fungi_db/public/${fileName}`;
+    const filePath = `${process.env.DEFAULT_PATH}frontend/public/${fileName}`;
     try{
         if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
             console.log("the file name given is: ", fileName);
@@ -140,7 +140,7 @@ app.post("/deleteCSVDownload", (req, res) => {
 
 app.post("/deleteJSONDownload", (req, res) => {
     const fileName = req.body.fileName;
-    const filePath = `${process.env.DEFAULT_PATH}fungi_db/public/${fileName}`;
+    const filePath = `${process.env.DEFAULT_PATH}frontend/public/${fileName}`;
     console.log("the file name given is: ", fileName);
     try{
         if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
@@ -172,7 +172,7 @@ app.post("/deleteSSResults", (req, res) =>{
         for(let i = 0; i < fileNames.length; i++){
             const fileName = fileNames[i];
             if(fileName.charAt(0) === "2" && fileName.charAt(1) === "0"){
-                const filePath = `${process.env.DEFAULT_PATH}fungi_db/` + fileName;
+                const filePath = `${process.env.DEFAULT_PATH}frontend/` + fileName;
                 fs.unlink(filePath, (err) => {
                     if(err){
                         throw err;

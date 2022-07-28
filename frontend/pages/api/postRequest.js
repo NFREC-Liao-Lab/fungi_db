@@ -6,7 +6,7 @@ export default async function handler(req, res){
     }
     let queries = [];
     console.log("length is: ", req.body.sequences.length);
-    const shellScriptPath = `${process.env.defaultPath}db/blastnAllDbs.sh`;
+    const shellScriptPath = `${process.env.defaultPath}/backend/db/blastnAllDbs.sh`;
     for(let i = 0; i < req.body.sequences.length; i++){
         queries[i] = req.body.sequences[i];
         console.log(`what's being executed ${shellScriptPath} ${queries[i]}`);
